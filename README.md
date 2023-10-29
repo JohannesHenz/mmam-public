@@ -1,3 +1,3 @@
-# multimodaler_abfahrtsmonitor
+# Multi Modaler Abfahrts Monitor
 
 

@@ -1,8 +1,13 @@
 const express = require('express');
+var favicon = require('serve-favicon')
+var path = require('path')
+
 const app = express();
 const port = 3313; 
 
 app.use(express.static(__dirname + '/public'));
+app.use(favicon(path.join(__dirname, '/public', 'favicon.ico')))
+
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {

@@ -16,4 +16,13 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => console.log(`listening on port http://localhost:${port}`))
 
-require('./postgres.js')
+const Database = require('./database.js')
+const database = new Database({
+    host: 'localhost',
+    port: 5432,
+    database: 'mmam',
+    user: 'postgres',
+    password: 'postgres'
+});
+
+database.testQuery();

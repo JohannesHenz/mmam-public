@@ -19,12 +19,13 @@ function testCall(retries) {
             renderTest(data);
         },
         error: function (xhr, status, error) {
-            if (retries > 0) {
+            if (retries > 1) {
                 setTimeout(function () {
                     testCall(retries - 1);
                 }, AJAX_RETRY_DELAY);
             } else {
                 console.log(`failed to GET http://localhost:3313/test in ${AJAX_RETRY_COUNT} tries`);
+                renderTest([])
             }
         }
     });

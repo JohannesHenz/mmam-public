@@ -8,3 +8,20 @@ body {
     padding: 0;
     height: 100vh; 
 }
+
+#test {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 500;
+    margin: 1%;
+    padding: 1%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+th {
+    text-transform: uppercase;
+}
+td {
+    text-align: center;
+}

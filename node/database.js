@@ -8,10 +8,11 @@ class Database {
     testQuery() {
         this.client.connect((err) => {
             this.client.query('SELECT * from test', (err, res) => {
-                console.log(err ? err.stack : res.rows)
-                this.client.end()
+                if (err) console.log(err.stack)
+                this.result = res.rows
             })
         })
+        return JSON.stringify(this.result)
     }
 }
 

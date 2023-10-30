@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-cd docker
-sudo ./run.sh
-cd ..
+if [ "$1" == "docker" ]; then
+    cd docker || exit
+    sudo ./run.sh
+    cd ..
+fi
 
 npm install
 npm run start

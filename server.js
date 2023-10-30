@@ -1,11 +1,5 @@
-const Database = require('./database.js')
-const database = new Database({
-    host: 'localhost',
-    port: 5432,
-    database: 'mmam',
-    user: 'postgres',
-    password: 'postgres'
-});
+const logger = require('./logger.js')
+const database = require('./database.js')
 
 const express = require('express')
 const favicon = require('serve-favicon');
@@ -28,5 +22,11 @@ app.get('/test', (req, res) => {
     res.send(json)
 })
 
-app.listen(port, () => console.log(`listening on port http://localhost:${port}`))
+app.get('/async/test', async (request, result) => {
+    const data = await database.query('SELECT * from test');
+    result.setHeader('Content-Type', 'application/json');
+    result.send(data);
+});
+
+app.listen(port, () => logger.success(`Listening: http://localhost:${port}`))
 

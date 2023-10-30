@@ -1,19 +1,18 @@
-const logger = require('./logger.js')
-const database = require('./database.js')
-
-const express = require('express')
+const logger = require('./logger.js');
+const database = require('./database.js');
+const express = require('express');
 const favicon = require('serve-favicon');
 const path = require('path');
-const app = express()
+const app = express();
 const port = 3313;
 
-app.use(express.static(__dirname + '/public'))
-app.use(favicon(path.join(__dirname, '/public', 'favicon.ico')))
+app.use(express.static(__dirname + '/public'));
+app.use(favicon(path.join(__dirname, '/public', 'favicon.ico')));
 
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.render('index');
 });
 
 app.get('/test', async (request, result) => {
@@ -22,6 +21,4 @@ app.get('/test', async (request, result) => {
     result.send(data.rows);
 });
 
-
-app.listen(port, () => logger.success(`Listening: http://localhost:${port}`))
-
+app.listen(port, () => logger.success(`Listening: http://localhost:${port}`));

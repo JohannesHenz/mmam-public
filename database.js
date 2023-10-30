@@ -30,15 +30,6 @@ class Database {
         logger.debug(`Database.query(${query}): ${duration}ms rows: ${result.rowCount}`);
         return result;
     }
-
-    testQuery() {
-        logger.debug('Database.testQuery()');
-        this.client.query('SELECT * from test', (err, res) => {
-            if (err) console.log(err.stack)
-            this.result = res.rows
-        })
-        return JSON.stringify(this.result)
-    }
 }
 
 const database = new Database();

@@ -67,7 +67,7 @@ function leafletMap() {
         maxZoom: 100,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-
+    map.removeControl(map.zoomControl);
 }
 
 async function testCall() {

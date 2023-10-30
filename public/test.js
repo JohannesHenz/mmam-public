@@ -36,7 +36,6 @@ function renderTest(data) {
     $('#test').empty();
     if (data.length === 0) {
         data = [{id: "N/A", name: "N/A"}]
-        console.log("data is empty")
     }
     const table = $('<table></table>');
     const headerRow = $('<tr></tr>');

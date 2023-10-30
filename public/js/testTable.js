@@ -7,6 +7,7 @@ $(document).ready(function () {
 
 function main() {
     testCall(AJAX_RETRY_COUNT);
+    setTimeout(main, 1000);
 }
 
 function testCall(retries) {
@@ -32,6 +33,11 @@ function testCall(retries) {
 }
 
 function renderTest(data) {
+    $('#test').empty();
+    if (data.length === 0) {
+        data = [{id: "N/A", name: "N/A"}]
+        console.log("data is empty")
+    }
     const table = $('<table></table>');
     const headerRow = $('<tr></tr>');
     headerRow.append('<th>ID</th>');

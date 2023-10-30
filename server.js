@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/test', async (request, result) => {
-    const data = await database.query('SELECT * from test');
+    const data = await database.query('SELECT * from test ORDER BY id ASC');
     result.setHeader('Content-Type', 'application/json');
     result.send(data.rows);
 });

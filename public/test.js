@@ -35,15 +35,21 @@ function testCall(retries) {
 function renderTest(data) {
     $('#test').empty();
     if (data.length === 0) {
-        data = [{id: "N/A", name: "N/A"}]
+        $('#test').append('<p>No data</p>');
+        return;
     }
     const table = $('<table></table>');
     const headerRow = $('<tr></tr>');
-    headerRow.append('<th>ID</th>');
-    headerRow.append('<th>Name</th>');
+    Object.keys(data[0]).forEach(key => {
+        headerRow.append($(`<th>${key.toLocaleUpperCase()}</th>`));
+    });
     table.append(headerRow);
     for (let i = 0; i < data.length; i++) {
-        table.append($(`<tr><td>${data[i].id}</td><td>${data[i].name}</td></tr>`));
+        const row = $('<tr></tr>');
+        Object.values(data[i]).forEach(value => {
+            row.append($(`<td>${value}</td>`));
+        });
+        table.append(row);
     }
     $('#test').append(table);
 }

@@ -7,7 +7,7 @@ $(document).ready(function () {
 
 function main() {
     testCall(AJAX_RETRY_COUNT);
-    setTimeout(main, 1000);
+    setTimeout(main, 2000);
 }
 
 function testCall(retries) {

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 if [ "$1" == "docker" ]; then
-    echo "Running requires sudo privileges."
     cd docker || exit
-    sudo ./run.sh
+    sudo -p "[sudo] required for docker: " ./run.sh
     cd ..
 fi
 

@@ -1,21 +1,15 @@
-const logger = require('./logger');
+const logger = require('../utils/logger');
 const {Client} = require('pg');
 
 class Database {
-    constructor() {
+    constructor(config) {
         logger.debug('Database.constructor()');
-        this.client = new Client({
-            host: 'localhost',
-            port: 5432,
-            database: 'mmam',
-            user: 'postgres',
-            password: 'postgres'
-        });
+        this.client = new Client(config);
         this.client.connect(undefined).then(() => {
             logger.success('Database: Connected');
             this.connected = true;
         }).catch(error => {
-            logger.error(`Database: ${error.stack}`);
+            logger.error(`Database: Failed to connect\n${error.stack}`);
         });
     }
 
@@ -32,5 +26,12 @@ class Database {
     }
 }
 
-const database = new Database();
+const database = new Database({
+    host: 'localhost',
+    port: 5432,
+    database: 'mmam',
+    user: 'postgres',
+    password: 'postgres'
+});
+
 module.exports = database

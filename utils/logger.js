@@ -4,6 +4,7 @@ class Logger {
             Logger.instance = this;
         }
     }
+
     #internal(color, ...args) {
         const timestamp = new Date().toLocaleString('de-de').replace(',', '');
         console.log(timestamp, color, ...args, '\x1b[0m');

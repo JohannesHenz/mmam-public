@@ -3,11 +3,10 @@ param(
 )
 
 if ($argument -eq "docker") {
-    Set-Location -Path "db" -ErrorAction Stop
-    Start-Process -FilePath "run.sh" -Wait -NoNewWindow
-    Set-Location -Path $PSScriptRoot
+    Set-Location -Path "docker" -ErrorAction Stop
+    Invoke-Expression -Command ".\run.ps1" 
+    Set-Location -Path "..\" -ErrorAction Stop
 }
 
 npm install
 npm run start
-

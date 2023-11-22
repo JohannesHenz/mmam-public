@@ -10,8 +10,8 @@ $image = docker ps | ForEach-Object {
 
 # Kill the running container
 if ($image) {
-    docker kill $image
+    docker rm -f $image
 }
 
 # Run the Docker container on port 5432
-Start-Process -FilePath "docker" -ArgumentList @("run", "-p", "5432:5432", "mmam") -Wait -NoNewWindow
+Start-Process -FilePath "docker" -ArgumentList @("run", "-d", "-p", "5432:5432", "mmam") -Wait -NoNewWindow

@@ -1,0 +1,4 @@
+- [ ] translate `*.sh` to `*.ps1` for Windows
+- [ ] create and integrate a working WinerLinien API call
+- [ ] create and integrate a working ÖBB API call
+- [ ] create and integrate a working Weather API call

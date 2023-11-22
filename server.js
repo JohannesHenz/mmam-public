@@ -1,6 +1,5 @@
 const logger = require('./utils/logger');
 const favicon = require('serve-favicon');
-const routes = require('./routes');
 const express = require('express');
 const server = express();
 const path = require('path');
@@ -17,7 +16,7 @@ server.use((request, response, next) => {
     next();
 });
 
-routes(server);
+require('./routes')(server);
 
 server.listen(port, () => {
     logger.success(`Listening: http://localhost:${port}`);

@@ -1,5 +1,6 @@
-$(document).keypress((event) => {
-    if (event.key === 'S' || event.key === 's') {
-        console.log('Settings');
-    }
-})
+$(document).ready(() => main());
+
+function main() {
+    // TODO: load existing settings
+    console.log('settings');
+}

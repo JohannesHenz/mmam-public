@@ -2,3 +2,4 @@
 - [ ] create and integrate a working WinerLinien API call
 - [ ] create and integrate a working ÖBB API call
 - [ ] create and integrate a working Weather API call
+- [ ] it's probably a good idea to authenticate the user upon entering the setttings

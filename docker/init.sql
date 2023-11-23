@@ -16,3 +16,28 @@ INSERT INTO test (name, value, DATE) VALUES ('name5', 'value5', '2018-01-05');
 INSERT INTO test (name, value, DATE) VALUES ('name6', 'value6', '2018-01-06');
 INSERT INTO test (name, value, DATE) VALUES ('name7', 'value7', '2018-01-07');
 INSERT INTO test (name, value, DATE) VALUES ('name8', 'value8', '2018-01-08');
+
+CREATE TABLE weather (
+    id serial PRIMARY KEY,
+    timestamp int NOT NULL,
+    timezone int NOT NULL,
+    longitude float NOT NULL,
+    latitude float NOT NULL,
+
+    weather_id int NOT NULL,
+    weather_main varchar(255) NOT NULL,
+    weather_description varchar(255) NOT NULL,
+    weather_icon varchar(255) NOT NULL,
+
+    main_temp float NOT NULL,
+    main_pressure float NOT NULL,
+    main_humidity float NOT NULL,
+    main_temp_min float NOT NULL,
+    main_temp_max float NOT NULL,
+
+    wind_speed float NOT NULL,
+    wind_deg float NOT NULL,
+    wind_gust float NOT NULL,
+
+    clouds_all int NOT NULL
+);

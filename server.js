@@ -1,5 +1,6 @@
 const logger = require('./utils/logger');
 const favicon = require('serve-favicon');
+const bodyParser = require('body-parser');
 const express = require('express');
 const server = express();
 const path = require('path');
@@ -8,6 +9,7 @@ const port = 3313;
 
 
 server.set('view engine', 'ejs');
+server.use(bodyParser.json());
 server.use(express.static(__dirname + '/public'));
 server.use(favicon(path.join(__dirname, '/public', 'favicon.ico')));
 

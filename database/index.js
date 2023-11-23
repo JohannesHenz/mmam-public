@@ -34,7 +34,7 @@ class Database {
     async query(query, parameters) {
         if (!this.connected) {
             logger.error(`Database.query(${query}): Not connected`);
-            return [];
+            return null;
         }
         const start = Date.now();
         const result = await this.client.query(query, parameters);

@@ -15,83 +15,10 @@
     <title>MMAM - Settings</title>
 </head>
 <body>
-
-<div class="container">
-    <h1>Settings</h1>
-    <br>
-    <div class="card p-3 mb-3 shadow">
-        <div class="card-body">
-            <div class="input-group mb-2">
-                <span for="latitude" class="input-group-text">Latitude</span>
-                <input type="number" id="latitude" class="form-control" value="map">
-            </div>
-            <div class="input-group mb-2">
-                <span for="longitude" class="input-group-text">Longitude</span>
-                <input type="number" id="longitude" class="form-control" value="map">
-            </div>
-            <div class="input-group mb-2">
-                <span for="zoom" class="input-group-text">Zoom</span>
-                <input type="number" id="zoom" class="form-control" value="map">
-            </div>
-            <div class="form-check mb-4">
-                <input class="form-check-input" type="checkbox" value="" id="lock">
-                <label class="form-check-label" for="lock">Lock view</label>
-            </div>
-            <div class="input-group mb-2">
-                <input type="file" id="file" class="form-control">
-                <span for="file-name" class="input-group-text">Name</span>
-                <input type="text" id="file-name" class="form-control" placeholder="Location Marker">
-            </div>
-            <div class="input-group mb-2">
-                <span for="name" class="input-group-text">GeoJSON</span>
-                <input type="text" id="name" class="form-control" value="home.json" disabled>
-                <button type="button" class="btn btn-danger">Delete</button>
-            </div>
-            <div class="input-group mb-2">
-                <span for="name" class="input-group-text">GeoJSON</span>
-                <input type="text" id="name" class="form-control" value="home.json" disabled>
-                <button type="button" class="btn btn-danger">Delete</button>
-            </div>
-            <div class="input-group mb-4">
-                <span for="name" class="input-group-text">GeoJSON</span>
-                <input type="text" id="name" class="form-control" value="home.json" disabled>
-                <button type="button" class="btn btn-danger">Delete</button>
-            </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-outline-primary" type="button">Download</button>
-                <button class="btn btn-primary me-md-2" type="button">Upload</button>
-            </div>
-        </div>
+    <div class="container my-4">
+        <%- include('include/map-settings.ejs') %>
     </div>
-    <div class="card p-3 mb-3 shadow">
-        <div class="card-body">
-            <h3 class="card-title">Panel</h3>
-            <div class="input-group mb-1">
-                <span for="name" class="input-group-text">Name</span>
-                <input type="text" id="name" class="form-control">
-            </div>
-            <div class="input-group mb-1">
-                <label for="endpoint" class="input-group-text">Endpoint</label>
-                <input type="text" id="endpoint" class="form-control">
-            </div>
-            <div class="input-group mb-1">
-                <label for="position" class="input-group-text">Position</label>
-                <input type="text" id="position" class="form-control">
-            </div>
-            <div class="input-group mb-1">
-                <label for="opacity" class="input-group-text">Opacity</label>
-                <input type="text" id="opacity" class="form-control">
-            </div>
-            <div class="input-group mb-1">
-                <label for="font-size" class="input-group-text">Font Size</label>
-                <input type="text" id="font-size" class="form-control">
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript" src="/settings.js"></script>
-<script type="text/javascript">
-    $(document).keypress((event) => { if (event.key === 'S' || event.key === 's') window.location.href = '/'; });
-</script>
+    <script type="text/javascript" src="/settings.js"></script>
+    <script type="text/javascript">$(document).keypress((event) => { if (event.key === 'S' || event.key === 's') window.location.href = '/'; });</script>
 </body>
 </html>

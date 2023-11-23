@@ -1,0 +1,49 @@
+<div class="card p-4 mb-2 shadow">
+    <div class="card-body">
+        <h4 class="card-title">Map Settings</h4>
+        <div class="input-group mb-2">
+            <span class="input-group-text">Latitude</span>
+            <input type="number" id="map-latitude" class="form-control" value="0.0">
+        </div>
+        <div class="input-group mb-2">
+            <span class="input-group-text">Longitude</span>
+            <input type="number" id="map-longitude" class="form-control" value="0.0">
+        </div>
+        <div class="input-group mb-2">
+            <span class="input-group-text">Zoom</span>
+            <input type="number" id="map-zoom" class="form-control" value="0.0">
+        </div>
+        <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" value="" id="lock">
+            <label class="form-check-label" for="lock">Lock view</label>
+        </div>
+
+        <h4 class="card-title mt-4">GeoJSON</h4>
+
+        <div class="input-group mb-2">
+            <input type="file" id="file" class="form-control">
+            <span for="file-name" class="input-group-text">Name</span>
+            <input type="text" id="file-name" class="form-control" placeholder="Location Marker">
+            <button type="button" class="btn btn-success">Upload</button>
+        </div>
+        <div class="input-group mb-2">
+            <span for="name" class="input-group-text">GeoJSON</span>
+            <input type="text" id="name" class="form-control" value="home.json" disabled>
+            <button type="button" class="btn btn-danger">Delete</button>
+        </div>
+        <div class="input-group mb-2">
+            <span for="name" class="input-group-text">GeoJSON</span>
+            <input type="text" id="name" class="form-control" value="home.json" disabled>
+            <button type="button" class="btn btn-danger">Delete</button>
+        </div>
+        <div class="input-group mb-4">
+            <span for="name" class="input-group-text">GeoJSON</span>
+            <input type="text" id="name" class="form-control" value="home.json" disabled>
+            <button type="button" class="btn btn-danger">Delete</button>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-outline-primary" type="button">Download</button>
+            <button class="btn btn-primary me-md-2" type="button">Upload</button>
+        </div>
+    </div>
+</div>

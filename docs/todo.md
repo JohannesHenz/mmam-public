@@ -1,5 +1,8 @@
-- [ ] translate `*.sh` to `*.ps1` for Windows
+- [x] translate `*.sh` to `*.ps1` for Windows
 - [ ] create and integrate a working WinerLinien API call
 - [ ] create and integrate a working ÖBB API call
-- [ ] create and integrate a working Weather API call
+- [x] create and integrate a working Weather API call
 - [ ] it's probably a good idea to authenticate the user upon entering the setttings
+- [ ] use dotenv
+- [ ] upload weather data to database
+- [ ] display weather data in frontend

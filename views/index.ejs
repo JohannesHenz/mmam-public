@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/styles.css"/>
+    <link rel="stylesheet" href="/styles.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
@@ -14,12 +14,9 @@
     <title>MMAM</title>
 </head>
 <body>
-<div id="test"></div>
 <div id="map"></div>
+<div id="test"></div>
 <script type="text/javascript" src="/map.js"></script>
 <script type="text/javascript" src="/test.js"></script>
-<script type="text/javascript">
-    $(document).keypress((event) => { if (event.key === 'S' || event.key === 's') window.location.href = '/settings'; });
-</script>
 </body>
 </html>

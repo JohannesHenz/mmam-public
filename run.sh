@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$1" == "docker" ]; then
-    cd database || exit
+    cd docker || exit
     sudo -p "[sudo] required for docker: " ./run.sh
     cd ..
 fi

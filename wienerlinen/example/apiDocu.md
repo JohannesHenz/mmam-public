@@ -1,3 +1,7 @@
+# how to run
+* `node winerlinen/example/proxyServer.js`
+* open the html
+
 The api.js file makes an asynch API call to Wiener Linien an fetches the following Infos from the URL Parameters:
 1. monitorTitle (e.g. Schottentor U)
 2. lineInfo (which includes:)

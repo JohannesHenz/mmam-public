@@ -4,11 +4,33 @@ const axios = require('axios');
 const logger = require('../utils/logger');
 
 router.get('/', async (request, response) => {
+    /* vani quickfix
     let data = await database.query('SELECT * from weather ORDER BY id');
     // TODO: check if data is older than N minutes
     if (data.rows.length === 0) {
         response.json(await fetchOpenWeather());
     }
+    */
+    const data = {
+        "timestamp": 1701732014,
+        "timezone": 3600,
+        "longitude": 16.3773,
+        "latitude": 48.2393,
+        "weather_id": 804,
+        "weather_main": "Clouds",
+        "weather_description": "overcast clouds",
+        "weather_icon": "04n",
+        "main_temp": -0.95,
+        "main_pressure": 1013,
+        "main_humidity": 86,
+        "main_temp_min": -3.21,
+        "main_temp_max": 0.84,
+        "wind_speed": 4.47,
+        "wind_deg": 144,
+        "wind_gust": 7.6,
+        "clouds_all": 100
+    }
+    response.json(data);
 });
 
 module.exports = router

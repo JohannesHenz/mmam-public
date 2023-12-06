@@ -2,11 +2,13 @@ body {
     margin: 0;
     padding: 0;
 }
+
 #map {
     margin: 0;
     padding: 0;
     height: 100vh;
 }
+
 #test {
     position: absolute;
     top: 0;
@@ -17,8 +19,18 @@ body {
     color: white;
     background-color: rgba(0, 0, 0, 0.8);
 }
+
 table {
     font-family: "Lucida Console", Monaco, monospace;
     border-collapse: separate;
     border-spacing: 15px;
+}
+
+#settings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    margin: 0;
+    padding: 0;
 }

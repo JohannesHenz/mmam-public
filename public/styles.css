@@ -35,6 +35,6 @@ table {
     padding: 0;
 }
 
-.card-header {
+#map-settings {
     cursor: move;
 }

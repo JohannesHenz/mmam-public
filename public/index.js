@@ -11,6 +11,7 @@ var map = null;
 $(document).ready(function () {
     initEventListeners();
     initMap();
+    $('#map-settings').draggable({ containment: 'window'});
 });
 
 

@@ -10,9 +10,10 @@ router.get('/', async (request, response) => {
 });
 
 const settingsBlueprint = {
-    latitude: 'number',
-    longitude: 'number',
-    zoom: 'number'
+    // key : [type, min, max]
+    latitude: ['number', -90, 90],
+    longitude: ['number', -180, 180],
+    zoom: ['number', 1, 20]
 };
 
 // TDOO: move to utils
@@ -21,9 +22,25 @@ function checkObject(object, blueprint) {
         if (object[key] === undefined) {
             return `.${key} is missing`;
         }
-        if (typeof object[key] !== blueprint[key]) {
-            return `.${key} is not a ${blueprint[key]}`;
+        if (typeof object[key] !== blueprint[key][0]) {
+            return `.${key} is not a ${blueprint[key][0]}`;
         }
+        // key : [type, length] // string
+        if (blueprint[key][0] === 'string') {
+            if (object[key].length > blueprint[key][1]) {
+                return `.${key} is too long (max: ${blueprint[key][1]})`;
+            }
+        }
+        // key : [type, min, max] // number
+        if (blueprint[key][0] === 'number') {
+            if (object[key] < blueprint[key][1]) {
+                return `.${key} is too small (min: ${blueprint[key][1]})`;
+            }
+            if (object[key] > blueprint[key][2]) {
+                return `.${key} is too big (max: ${blueprint[key][2]})`;
+            }
+        }
+
     }
     return null;
 }

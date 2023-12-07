@@ -15,7 +15,8 @@ class Logger {
     }
 
     info(...args) {
-        this.#internal('\x1b[36m', ...args);
+        //this.#internal('\x1b[36m', ...args);
+        this.#internal('', ...args);
     }
 
     warn(...args) {

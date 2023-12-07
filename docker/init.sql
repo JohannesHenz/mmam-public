@@ -41,3 +41,13 @@ CREATE TABLE weather (
 
     clouds_all int NOT NULL
 );
+
+CREATE TABLE settings (
+    id serial PRIMARY KEY,
+    latitude float NOT NULL,
+    longitude float NOT NULL,
+    zoom float NOT NULL
+);
+
+INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
+

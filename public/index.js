@@ -1,7 +1,7 @@
 var settings = {
-    latitude: 48.23944,
-    longitude: 16.37725,
-    zoom: 16,
+    latitude: 0,
+    longitude: 0,
+    zoom: 1,
     panLock: false,
     zoomLock: false,
 }
@@ -9,11 +9,30 @@ var settings = {
 var map = null;
 
 $(document).ready(function () {
-    initEventListeners();
-    initMap();
-    $('#map-settings').draggable({ containment: 'window'});
+    getSettings().then(() => {
+        initEventListeners();
+        initMap();
+        $('#map-settings').draggable({ containment: 'window'});
+    })
 });
 
+async function getSettings() {
+    await $.ajax({
+        url: '/settings',
+        type: 'GET',
+        success: function (response) {
+            settings.latitude = response.latitude;
+            settings.longitude = response.longitude;
+            settings.zoom = response.zoom;
+            settings.panLock = false;
+            settings.zoomLock = false;
+            console.log('done');
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
 
 function initMap() {
     map = L.map('map').setView([settings.latitude, settings.longitude], settings.zoom);

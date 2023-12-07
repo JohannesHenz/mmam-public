@@ -24,8 +24,8 @@ async function getSettings() {
             settings.latitude = response.latitude;
             settings.longitude = response.longitude;
             settings.zoom = response.zoom;
-            settings.panLock = false;
-            settings.zoomLock = false;
+            settings.panLock = true;
+            settings.zoomLock = true;
             console.log('done');
         },
         error: function (error) {

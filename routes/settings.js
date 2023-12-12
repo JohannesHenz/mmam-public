@@ -54,6 +54,7 @@ router.post('/', async (request, response) => {
         response.status(400).send(result);
         return;
     }
+
     await database.query(`
         UPDATE settings SET
             latitude = ${body.latitude},

@@ -105,6 +105,7 @@ function settingsEventListeners() {
         map.setView([settings.latitude, settings.longitude], settings.zoom);
         zoomLock(settings.zoomLock);
         panLock(settings.panLock);
+        getSettings();
     });
     $('#map-settings-save').click(function () {
         settings.latitude = map.getCenter().lat;
@@ -112,7 +113,7 @@ function settingsEventListeners() {
         settings.zoom = map.getZoom();
         settings.panLock = $('#pan-lock').is(':checked');
         settings.zoomLock = $('#zoom-lock').is(':checked');
-        toggleSettings();
+        setSettings();
     });
     $('#map').mousemove(function () {
         updateSettings();
@@ -142,6 +143,26 @@ function settingsEventListeners() {
         } else {
             settings.zoomLock = false;
             zoomLock(settings.zoomLock);
+        }
+    });
+}
+
+function setSettings() {
+    let data = {
+        latitude: settings.latitude,
+        longitude: settings.longitude,
+        zoom: settings.zoom,
+    };
+    $.ajax({
+        url: '/settings',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (error) {
+            console.log(error);
         }
     });
 }

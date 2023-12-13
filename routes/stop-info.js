@@ -87,7 +87,7 @@ router.post('/', async (request, response) => {
 // Function to look up stopId based on stopName
 async function getStopId(stopName) {
     try {
-        const csvFilePath = path.join(__dirname, '..', 'wienerlinen', 'wienerlinen-ogd-haltepunkte.csv');
+        const csvFilePath = path.join(__dirname, '..', 'wienerlinien', 'wienerlinien-ogd-haltepunkte.csv');
         const stopIdMap = await loadStopIdMap(csvFilePath);
         const stopId = stopIdMap[stopName.toLowerCase()];
 

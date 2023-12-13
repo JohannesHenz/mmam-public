@@ -13,7 +13,7 @@ const port = 3313;
 server.set('view engine', 'ejs');
 server.use(bodyParser.json());
 server.use(cors());
-server.use('/wienerlinien', wienerLinienRoute);
+server.use( wienerLinienRoute);
 server.use(express.static(__dirname + '/public'));
 server.use(favicon(path.join(__dirname, '/public', 'favicon.ico')));
 

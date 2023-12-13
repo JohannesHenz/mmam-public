@@ -100,7 +100,7 @@ function getStopInfo() {
     // Send a POST request to your server with the entered stopName
     $.ajax({
         type: 'POST',
-        url: '/wienerlinien/stop-info', // This should match your server route
+        url: '/stop-info', // This should match your server route
         contentType: 'application/json',
         Accept: 'application/json',
         data: JSON.stringify({ stopName: stopName }),

@@ -1,0 +1,21 @@
+<!-- mmam/views/stop-info.ejs -->
+
+<div id="stop-info" style="display: none">
+    <div class="card shadow-lg" id="stop-info-settings">
+        <!-- Similar structure to settings window -->
+        <div class="card-header">
+            <h5 class="mt-1">Stop Info</h5>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="stop-id-span">Stop Name</span>
+                    <input type="text" class="form-control" aria-describedby="stop-id-span" placeholder="Enter stop name" id="stop-info-input">
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-primary" type="button" id="get-stop-info">Get Arrival Time</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

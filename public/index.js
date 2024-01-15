@@ -12,7 +12,7 @@ $(document).ready(function () {
     getSettings().then(() => {
         initEventListeners();
         initMap();
-        $('#map-settings').draggable({ containment: 'window'});
+        $('#map-settings, #stop-info').draggable({ containment: 'window'});
     })
 });
 
@@ -47,11 +47,20 @@ function initMap() {
 
 function initEventListeners() {
     $(document).keydown(function (event) {
+
+        if (!isInputFieldActive()) {
         if (event.key === 's' || event.key === 'S') {
             toggleSettings();
-        }
+        } else if (event.key === 'i' || event.key === 'I') {
+            toggleStopInfo();
+        }  
+    }
     });
     settingsEventListeners();
+
+    $('#get-stop-info').click(function () {
+        getStopInfo();
+    });
 }
 
 function updateSettings() {
@@ -75,6 +84,44 @@ function toggleSettings() {
     $('#settings').toggle();
     updateSettings();
 }
+
+function toggleStopInfo() {
+    $('#stop-info').toggle();
+}
+
+function isInputFieldActive() {
+    // Check if any input field has focus
+    return $('input:focus').length > 0;
+}
+
+
+function getStopInfo() {
+    const stopName = $('#stop-info-input').val(); 
+    // Send a POST request to your server with the entered stopName
+    $.ajax({
+        type: 'POST',
+        url: '/stop-info', // This should match your server route
+        contentType: 'application/json',
+        Accept: 'application/json',
+        data: JSON.stringify({ stopName: stopName }),
+        success: function(response) {
+            // Handle the successful response, e.g., display the data in a new window
+            displayStopInfo(response);
+        },
+        error: function(error) {
+            // Handle errors, e.g., display an error message;
+            console.error('Error fetching stop info:', error);
+        }
+    });
+}
+
+function displayStopInfo(info) {
+
+    console.log('Stop Info:', info);
+    alert('Stop Info:\n' + JSON.stringify(info, null, 2)); //TODO change this
+}
+
+
 
 function zoomLock(state) {
     if (state) {

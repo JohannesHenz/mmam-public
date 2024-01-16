@@ -4,33 +4,14 @@ const axios = require('axios');
 const logger = require('../utils/logger');
 
 router.get('/', async (request, response) => {
-    /* vani quickfix
+    /*
     let data = await database.query('SELECT * from weather ORDER BY id');
-    // TODO: check if data is older than N minutes
     if (data.rows.length === 0) {
+        console.log('fetching data from openweather');
         response.json(await fetchOpenWeather());
     }
     */
-    const data = {
-        "timestamp": 1701732014,
-        "timezone": 3600,
-        "longitude": 16.3773,
-        "latitude": 48.2393,
-        "weather_id": 804,
-        "weather_main": "Clouds",
-        "weather_description": "overcast clouds",
-        "weather_icon": "04n",
-        "main_temp": -0.95,
-        "main_pressure": 1013,
-        "main_humidity": 86,
-        "main_temp_min": -3.21,
-        "main_temp_max": 0.84,
-        "wind_speed": 4.47,
-        "wind_deg": 144,
-        "wind_gust": 7.6,
-        "clouds_all": 100
-    }
-    response.json(data);
+    response.json(await fetchOpenWeather());
 });
 
 module.exports = router
@@ -44,7 +25,25 @@ async function fetchOpenWeather() {
     const lang = 'en';
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=${units}&lang=${lang}&appid=${apiKey}`;
     return await axios.get(url).then((response) => {
-        // TODO: save to database
+        database.query('INSERT INTO weather (timestamp, timezone, longitude, latitude, weather_id, weather_main, weather_description, weather_icon, main_temp, main_pressure, main_humidity, main_temp_min, main_temp_max, wind_speed, wind_deg, wind_gust, clouds_all) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $11, $12, $13, $14, $15, $16, $17)', [
+            response.data.dt,
+            response.data.timezone,
+            response.data.coord.lon,
+            response.data.coord.lat,
+            response.data.weather[0].id,
+            response.data.weather[0].main,
+            response.data.weather[0].description,
+            response.data.weather[0].icon,
+            response.data.main.temp,
+            response.data.main.pressure,
+            response.data.main.humidity,
+            response.data.main.temp_min,
+            response.data.main.temp_max,
+            response.data.wind.speed,
+            response.data.wind.deg,
+            response.data.wind.gust,
+            response.data.clouds.all
+        ]);
         return convertData(response.data);
     }).catch((error) => {
         logger.error(error.message);

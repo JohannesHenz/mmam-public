@@ -4,6 +4,7 @@ const Routes = (server) => {
     server.use('/weather', require('./weather'));
     server.use('/settings', require('./settings'));
     server.use('/journeys', require('./journeys'));
+    server.use('/stop-info', require('./stop-info'));
 };
 
 module.exports = Routes;

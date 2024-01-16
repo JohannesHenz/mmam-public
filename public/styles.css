@@ -53,3 +53,16 @@ table {
 #map-settings {
     cursor: move;
 }
+
+#stop-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    margin: 0;
+    padding: 0;
+}
+
+#stop-info-settings {
+    cursor: move;
+}

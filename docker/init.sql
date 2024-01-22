@@ -43,7 +43,8 @@ CREATE TABLE weather (
 );
 
 CREATE TABLE station (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    stationID varchar(255) NOT NULL,
     stationName varchar(255) NOT NULL
 );
 

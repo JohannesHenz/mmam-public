@@ -31,7 +31,7 @@ async function fetchStationId(stationName) {
         if (data.rows.length === 0) {
             return 1292001;
         }
-        return data.rows[0].id;
+        return data.rows[0].stationid;
     }
     catch (error) {
         logger.error(error);
@@ -63,7 +63,7 @@ async function fetchSuggestions(stationName) {
 
 async function insertStation(stationName, stationId) {
     try {
-        database.query('INSERT INTO station (stationName, id) VALUES ($1, $2)', [stationName, stationId]);
+        database.query('INSERT INTO station (stationName, stationID) VALUES ($1, $2)', [stationName, stationId]);
     }
     catch (error) {
         logger.error(error);
@@ -72,7 +72,7 @@ async function insertStation(stationName, stationId) {
 
 async function stationExists(stationId) {
     try {
-        const data = await database.query('SELECT * FROM station WHERE id = $1', [stationId]);
+        const data = await database.query('SELECT * FROM station WHERE stationID = $1', [stationId]);
         if (data.rows.length === 0) {
             return false;
         }

@@ -42,34 +42,10 @@ CREATE TABLE weather (
     clouds_all int NOT NULL
 );
 
-CREATE TABLE journeys (
-    id SERIAL PRIMARY KEY,
-    head_text VARCHAR(255),
-    station_name VARCHAR(255),
-    station_eva_id VARCHAR(10),
-    board_type VARCHAR(10),
-    img_path VARCHAR(255),
-    icon_products_sub_path VARCHAR(50),
-    rt_info BOOLEAN,
-    journey_id INTEGER REFERENCES journey(id),
-    max_j INTEGER
+CREATE TABLE station (
+    id INT PRIMARY KEY,
+    stationName varchar(255) NOT NULL
 );
-
-CREATE TABLE journey (
-    id PRIMARY KEY,
-    journey_id INTEGER REFERENCES journeys(id),
-    ti TIME,
-    da DATE,
-    pr VARCHAR(10),
-    st VARCHAR(255),
-    last_stop VARCHAR(255),
-    ati TIME,
-    tr VARCHAR(10),
-    tr_chg BOOLEAN,
-    rt BOOLEAN,
-    rta BOOLEAN
-);
-
 
 CREATE TABLE settings (
     id serial PRIMARY KEY,
@@ -77,6 +53,7 @@ CREATE TABLE settings (
     longitude float NOT NULL,
     zoom float NOT NULL
 );
+
 
 INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
 

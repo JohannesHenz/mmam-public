@@ -6,14 +6,15 @@
         <div class="card-header">
             <h5 class="mt-1">Stop Info</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body form-group">
             <form>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="stop-id-span">Stop Name</span>
-                    <input type="text" class="form-control" aria-describedby="stop-id-span" placeholder="Enter stop name" id="stop-info-input">
+                    <input type="text" class="form-control" aria-describedby="stop-id-span" placeholder="Enter stop name" id="stop-info-input" list="suggestions">
+                    <datalist id="suggestions"></datalist>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-primary" type="button" id="get-stop-info">Get Arrival Time</button>
+                    <button class="btn btn-primary" type="button" id="get-stop-info">Get Arrival Times</button>
                 </div>
             </form>
         </div>

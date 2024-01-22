@@ -17,10 +17,6 @@ $(document).ready(function () {
         initMap();
         $('#map-settings, #stop-info').draggable({ containment: 'window'});
     })
-    getJourneys().then(() => {
-        renderJourneysTable();
-        $('#journeysInfo').draggable({ containment: 'window'});
-    })
 });
 
 async function getSettings() {
@@ -33,21 +29,6 @@ async function getSettings() {
             settings.zoom = response.zoom;
             settings.panLock = true;
             settings.zoomLock = true;
-            console.log('done');
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-}
-
-async function getJourneys() {
-    await $.ajax({
-        url: '/journeys',
-        type: 'GET',
-        success: function (response) {
-            journeys = response;
-            console.log(journeys.journey);
             console.log('done');
         },
         error: function (error) {
@@ -76,15 +57,21 @@ function initEventListeners() {
         } else if (event.key === 'i' || event.key === 'I') {
             toggleStopInfo();
         }  
-    }
-        if (event.key === 'j' || event.key === 'J') {
-            $('#journeysInfo').toggle();
+        else if (event.key === 'j' || event.key === 'J') {
+            toggleJourneysInfo();
         }
+    }
     });
     settingsEventListeners();
+    $('#stop-info-input').on('input', function() {
+        getSuggestions();
+    });
 
     $('#get-stop-info').click(function () {
         getStopInfo();
+        getJourneys().then(() => {
+            renderJourneysTable();
+        });
     });
 }
 
@@ -112,6 +99,10 @@ function toggleSettings() {
 
 function toggleStopInfo() {
     $('#stop-info').toggle();
+}
+
+function toggleJourneysInfo() {
+    $('#journeysInfo').toggle();
 }
 
 function isInputFieldActive() {
@@ -238,21 +229,3 @@ function setSettings() {
         }
     });
 }
-
-function renderJourneysTable() {
-    const station = document.getElementById('station');
-    const tableBody = document.getElementById('journeysTableBody');
-    tableBody.innerHTML = '';
-    station.innerHTML += journeys.stationName;
-
-    journeys.journey.forEach(journey => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${journey.ti}</td>
-        <td>${journey.pr}</td>
-        <td>${journey.lastStop}</td>
-        <td>${journey.tr}</td>
-      `;
-      tableBody.appendChild(row);
-    });
-  }

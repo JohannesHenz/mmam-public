@@ -54,6 +54,15 @@ CREATE TABLE settings (
     zoom float NOT NULL
 );
 
+CREATE TABLE haltepunkte (
+    StopID VARCHAR(255) PRIMARY KEY,
+    DIVA INTEGER,
+    StopText VARCHAR(255) NOT NULL,
+    Municipality VARCHAR(255),
+    MunicipalityID INTEGER,
+    Longitude FLOAT,
+    Latitude FLOAT
+);
 
 INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
 

@@ -99,6 +99,8 @@ router.post('/', async (request, response) => {
     }
 });
 
+
+
 // Function to look up stopId based on stopName
 async function getStopId(stopName) {
     try {
@@ -107,13 +109,13 @@ async function getStopId(stopName) {
         const query = 'SELECT "stopid" FROM "haltepunkte" WHERE TRIM("stoptext") = $1';
         const result = await db.query(query, [stopName]);
         
-        const StopID = result.rows[0]?.stopid;
+        const StopIDs = result.rows.map(row => row.stopid);
 
-        console.log('Resolved stopId:', StopID);
+        console.log('Resolved stopId:', StopIDs);
 
-        return StopID;
+        return StopIDs;
     } catch (error) {
-        console.error('Error while getting stopId:', error);
+        console.error('Error while getting stopIds:', error);
         return null;
     }
 }
@@ -157,6 +159,13 @@ function checkDatabaseConnectionPeriodically() {
     }, 3000); // Check every 3 seconds
 }
 
+async function isHaltepunkteTableEmpty() {
+    const query = 'SELECT COUNT(*) FROM haltepunkte';
+    const result = await db.query(query);
+    const rowCount = parseInt(result.rows[0].count, 10);
+    return rowCount === 0;
+}
+
 async function populateDatabase() {
     await downloadCSVFile();
 
@@ -167,13 +176,20 @@ async function populateDatabase() {
             return;
         }
 
-        const data = await readCSV(csvFilePath);
+        // Check if haltepunkte table is already populated
+        const isTableEmpty = await isHaltepunkteTableEmpty();
 
-        if (data.length > 0) {
-            await insertDataIntoDatabase(data);
-            console.log('Data inserted into the database successfully.');
+        if (isTableEmpty) {
+            const data = await readCSV(csvFilePath);
+
+            if (data.length > 0) {
+                await insertDataIntoDatabase(data);
+                console.log('Data inserted into the database successfully.');
+            } else {
+                console.log('No data to insert.');
+            }
         } else {
-            console.log('No data to insert.');
+            console.log('Haltepunkte table is already populated. Skipping insertion.');
         }
     } catch (error) {
         console.error('Error populating database:', error);
@@ -201,6 +217,8 @@ async function readCSV(filePath) {
             });
     });
 }
+
+
 
 async function insertDataIntoDatabase(data) {
     const insertQuery = 'INSERT INTO haltepunkte (stopid, diva, stoptext, municipality, municipalityid, longitude, latitude) VALUES ($1, $2, $3, $4, $5, $6, $7)';
@@ -306,6 +324,9 @@ async function updateDatabaseWithWienerLinienData(newData) {
         throw error;
     }
 }
+
+
+
 
 fetchAndSyncWienerLinienDataPeriodically();
 

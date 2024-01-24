@@ -1,5 +1,6 @@
 CREATE DATABASE mmam;
 \c mmam;
+\dt
 
 CREATE TABLE test (
     id serial PRIMARY KEY,
@@ -42,6 +43,17 @@ CREATE TABLE weather (
     clouds_all int NOT NULL
 );
 
+CREATE TABLE haltepunkte (
+    id SERIAL PRIMARY KEY,
+    StopID INTEGER,
+    DIVA INTEGER,
+    StopText VARCHAR(255) NOT NULL,
+    Municipality VARCHAR(255),
+    MunicipalityID INTEGER,
+    Longitude FLOAT,
+    Latitude FLOAT
+);
+
 CREATE TABLE station (
     id SERIAL PRIMARY KEY,
     stationID varchar(255) NOT NULL,
@@ -55,15 +67,7 @@ CREATE TABLE settings (
     zoom float NOT NULL
 );
 
-CREATE TABLE haltepunkte (
-    StopID VARCHAR(255) PRIMARY KEY,
-    DIVA INTEGER,
-    StopText VARCHAR(255) NOT NULL,
-    Municipality VARCHAR(255),
-    MunicipalityID INTEGER,
-    Longitude FLOAT,
-    Latitude FLOAT
-);
+
 
 INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
 

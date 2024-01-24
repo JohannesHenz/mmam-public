@@ -111,34 +111,6 @@ function isInputFieldActive() {
 }
 
 
-function getStopInfo() {
-    const stopName = $('#stop-info-input').val(); 
-    // Send a POST request to your server with the entered stopName
-    $.ajax({
-        type: 'POST',
-        url: '/stop-info', // This should match your server route
-        contentType: 'application/json',
-        Accept: 'application/json',
-        data: JSON.stringify({ stopName: stopName }),
-        success: function(response) {
-            // Handle the successful response, e.g., display the data in a new window
-            displayStopInfo(response);
-        },
-        error: function(error) {
-            // Handle errors, e.g., display an error message;
-            console.error('Error fetching stop info:', error);
-        }
-    });
-}
-
-function displayStopInfo(info) {
-
-    console.log('Stop Info:', info);
-    alert('Stop Info:\n' + JSON.stringify(info, null, 2)); //TODO change this
-}
-
-
-
 function zoomLock(state) {
     if (state) {
         map.touchZoom.disable();

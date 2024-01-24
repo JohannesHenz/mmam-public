@@ -7,8 +7,8 @@ const path = require('path');
 
 
 // Function to fetch data from Wiener Linien API using stopId
-async function fetchWienerLinienData(stopId) {
-    const url = `https://www.wienerlinien.at/ogd_realtime/monitor?stopId=${stopId}`;
+async function fetchWienerLinienData(StopID) {
+    const url = `https://www.wienerlinien.at/ogd_realtime/monitor?stopId=${StopID}`;
 
     const options = {
         method: 'GET',
@@ -64,17 +64,17 @@ router.post('/', async (request, response) => {
 
 
     // Look up the stopId based on the stopName
-    const stopId = await getStopId(stopName);
-    console.log('Resolved stopId:', stopId);
+    const StopID = await getStopId(stopName);
+    console.log('Resolved stopId:', StopID);
 
-    if (!stopId) {
+    if (!StopID) {
         response.status(404).json({ error: 'Stop not found' });
         return;
     }
 
     try {
         // Fetch data using the obtained stopId
-        const wienerLinienResponse = await fetchWienerLinienData(stopId);
+        const wienerLinienResponse = await fetchWienerLinienData(StopID);
         console.log('Wiener Linien response:', wienerLinienResponse);
 
         // Send the Wiener Linien data back to the frontend
@@ -90,9 +90,9 @@ async function getStopId(stopName) {
     try {
         const query = 'SELECT "StopID" FROM "haltepunkte" WHERE "StopText" = $1';
         const result = await db.query(query, [stopName.toLowerCase()]);
-        const stopId = result.rows[0]?.StopID;
+        const StopID = result.rows[0]?.StopID;
 
-        return stopId;
+        return StopID;
     } catch (error) {
         console.error('Error while getting stopId:', error);
         return null;
@@ -108,9 +108,9 @@ async function loadStopIdMap(csvFilePath) {
             .pipe(csvParser({ separator: ';' }))
             .on('data', (row) => {
                 const stopName = row.StopText.toLowerCase();
-                const stopId = row.StopID;
+                const StopID = row.StopID;
 
-                stopIdMap[stopName] = stopId;
+                stopIdMap[stopName] = StopID;
             })
             .on('end', () => {
                 resolve(stopIdMap);
@@ -146,10 +146,29 @@ async function downloadCSVFile() {
     }
 }
 
+//Function to check if the database is connected
+function checkDatabaseConnectionPeriodically() {
+    const intervalId = setInterval(async () => {
+        if (db.connected) {
+            clearInterval(intervalId); // Stop when connected
+            console.log('Database connected. Running populateDatabase.');
+            await populateDatabase();
+        } else {
+            console.log('Database not connected. Retrying...');
+        }
+    }, 3000); // Check every 3 seconds
+}
+
 async function populateDatabase() {
     await downloadCSVFile();
 
     try {
+        // Check if the database is connected
+        if (!db.connected) {
+            console.error('Database is not connected. Aborting database population.');
+            return;
+        }
+
         const data = await readCSV(csvFilePath);
 
         if (data.length > 0) {
@@ -165,6 +184,7 @@ async function populateDatabase() {
         await db.query('ROLLBACK');
     }
 }
+
 
 async function readCSV(filePath) {
     return new Promise((resolve, reject) => {
@@ -185,15 +205,30 @@ async function readCSV(filePath) {
 }
 
 async function insertDataIntoDatabase(data) {
-    const insertQuery = 'INSERT INTO haltepunkte ("StopID", "DIVA", "StopText", "Municipality", "MunicipalityID", "Longitude", "Latitude") VALUES ($1, $2, $3, $4, $5, $6, $7)';
+    const insertQuery = 'INSERT INTO haltepunkte (stopid, diva, stoptext, municipality, municipalityid, longitude, latitude) VALUES ($1, $2, $3, $4, $5, $6, $7)';
 
     // Begin a transaction
     await db.query('BEGIN');
 
     try {
+
         for (const row of data) {
+            console.log('Inserting row:', row); } //DEBUG
+
+         
+
+        for (const row of data) {
+
+            const StopID = parseInt(row.StopID);
+
+         if (isNaN(StopID)) {
+            console.log(`Skipping row with invalid StopID: ${row.StopID}`);
+            continue; // Skip this row
+        }
+
+
             await db.query(insertQuery, [
-                row.StopID,
+                parseInt(row.StopID),
                 parseInt(row.DIVA),
                 row.StopText,
                 row.Municipality,
@@ -212,7 +247,66 @@ async function insertDataIntoDatabase(data) {
     }
 }
 
+
+function fetchAndSyncWienerLinienDataPeriodically(StopID) {
+    setInterval(async () => {
+        try {
+            console.log('Fetching and updating Wiener Linien data...');
+            
+            // Fetch data from Wiener Linien
+            const newData = await fetchWienerLinienData(StopID);
+
+            // Update the database with the new data
+            await updateDatabaseWithWienerLinienData(newData);
+
+            console.log('Wiener Linien data updated successfully.');
+        } catch (error) {
+            console.error('Error fetching and updating Wiener Linien data:', error);
+        }
+    }, 30000); // Fetch and update every 30 seconds
+}
+
+
+
+// Function to update the database with new Wiener Linien data
+async function updateDatabaseWithWienerLinienData(newData) {
+    try {
+        // Check if the database is connected
+        if (!db.connected) {
+            console.error('Database is not connected. Aborting database update.');
+            return;
+        }
+
+        // Begin a transaction
+        await db.query('BEGIN');
+
+        // Clear existing data in the database
+        await db.query('DELETE FROM wienerlinien_data');
+
+        // Insert the new data into the database
+        for (const row of newData) {
+            await db.query('INSERT INTO wienerlinien_data ("MonitorTitle", "LineName", "Towards", "DepartureTime") VALUES ($1, $2, $3, $4)', [
+                row.monitorTitle,
+                row.lineInfo.Name,
+                row.lineInfo.towards,
+                row.lineInfo.departureTime
+            ]);
+        }
+
+        // Commit the transaction if all inserts succeed
+        await db.query('COMMIT');
+    } catch (error) {
+        // Rollback the transaction if an error occurs
+        await db.query('ROLLBACK');
+        throw error;
+    }
+}
+
+fetchAndSyncWienerLinienDataPeriodically();
+
+checkDatabaseConnectionPeriodically();
 // Call the function to populate the database when the script is executed
 populateDatabase();
+
 
 module.exports = router

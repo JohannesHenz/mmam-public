@@ -1,6 +1,5 @@
 CREATE DATABASE mmam;
 \c mmam;
-\dt
 
 CREATE TABLE test (
     id serial PRIMARY KEY,

@@ -68,6 +68,7 @@ function initEventListeners() {
     });
 
     $('#get-stop-info').click(function () {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         getStopInfo();
         getJourneys().then(() => {
             renderJourneysTable();

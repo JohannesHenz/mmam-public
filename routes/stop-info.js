@@ -6,9 +6,13 @@ const axios = require('axios');
 const path = require('path');
 
 
+let wienerLinienData = null;
+
 // Function to fetch data from Wiener Linien API using stopId
 async function fetchWienerLinienData(StopID) {
     const url = `https://www.wienerlinien.at/ogd_realtime/monitor?stopId=${StopID}`;
+    console.log('URL:', url); // Debugging line
+
 
     const options = {
         method: 'GET',
@@ -19,9 +23,14 @@ async function fetchWienerLinienData(StopID) {
     };
 
     try {
+        console.log('Fetching data from Wiener Linien API...');
         const response = await axios(url, options);
 
+        console.log('Wiener Linien API response:', response.data); // Debugging line
+
+
         if (!response.data || !response.data.data) {
+            console.error('Invalid response from Wiener Linien API:', response.data);
             throw new Error('Invalid response from Wiener Linien API');
         }
 
@@ -51,14 +60,19 @@ async function fetchWienerLinienData(StopID) {
             };
         });
 
+        console.log('Wiener Linien data fetched successfully:', monitorInfo);
         return monitorInfo;
     } catch (error) {
+        console.error('Error fetching data from Wiener Linien API:', error);
         throw new Error('Error fetching data from Wiener Linien API');
     }
 }
 
+
 router.post('/', async (request, response) => {
     console.log('POST request to /wienerlinien/stop-info received');
+    console.log('Request Body:', request.body); // Log the entire request body
+
     const stopName = request.body.stopName;
     console.log('Received stopName:', stopName);
 
@@ -88,9 +102,14 @@ router.post('/', async (request, response) => {
 // Function to look up stopId based on stopName
 async function getStopId(stopName) {
     try {
-        const query = 'SELECT "StopID" FROM "haltepunkte" WHERE "StopText" = $1';
-        const result = await db.query(query, [stopName.toLowerCase()]);
-        const StopID = result.rows[0]?.StopID;
+        console.log('Attempting to get stopId for stopName:', stopName);
+
+        const query = 'SELECT "stopid" FROM "haltepunkte" WHERE TRIM("stoptext") = $1';
+        const result = await db.query(query, [stopName]);
+        
+        const StopID = result.rows[0]?.stopid;
+
+        console.log('Resolved stopId:', StopID);
 
         return StopID;
     } catch (error) {
@@ -99,27 +118,6 @@ async function getStopId(stopName) {
     }
 }
 
-
-async function loadStopIdMap(csvFilePath) {
-    return new Promise((resolve, reject) => {
-        const stopIdMap = {};
-
-        fs.createReadStream(csvFilePath)
-            .pipe(csvParser({ separator: ';' }))
-            .on('data', (row) => {
-                const stopName = row.StopText.toLowerCase();
-                const StopID = row.StopID;
-
-                stopIdMap[stopName] = StopID;
-            })
-            .on('end', () => {
-                resolve(stopIdMap);
-            })
-            .on('error', (error) => {
-                reject(error);
-            });
-    });
-}
 
 const csvFilePath = path.join(__dirname, '..', 'wienerlinien', 'wienerlinien-ogd-haltepunkte.csv');
 
@@ -213,29 +211,36 @@ async function insertDataIntoDatabase(data) {
     try {
 
         for (const row of data) {
-            console.log('Inserting row:', row); } //DEBUG
-
-         
-
-        for (const row of data) {
-
-            const StopID = parseInt(row.StopID);
-
-         if (isNaN(StopID)) {
-            console.log(`Skipping row with invalid StopID: ${row.StopID}`);
-            continue; // Skip this row
-        }
-
-
-            await db.query(insertQuery, [
-                parseInt(row.StopID),
-                parseInt(row.DIVA),
-                row.StopText,
-                row.Municipality,
-                parseInt(row.MunicipalityID),
-                parseFloat(row.Longitude),
-                parseFloat(row.Latitude)
-            ]);
+            console.log('Inserting row:', row);
+        
+            // Check if there is a StopID for the row
+            if (row.StopID !== undefined && row.StopID !== null && row.StopID !== "") {
+                const stopId = parseInt(row.StopID);
+                const diva = parseInt(row.DIVA);
+                const municipalityId = parseInt(row.MunicipalityID);
+        
+                if (!isNaN(stopId) && !isNaN(diva) && !isNaN(municipalityId)) {
+                    await db.query(insertQuery, [
+                        stopId,
+                        diva,
+                        row.StopText,
+                        row.Municipality,
+                        municipalityId,
+                        parseFloat(row.Longitude),
+                        parseFloat(row.Latitude)
+                    ]);
+        
+                    // Check if the StopID is 9999 and stop the loop
+                    if (stopId === 9999) {
+                        console.log('Reached StopID 9999. Stopping insertion.');
+                        break;
+                    }
+                } else {
+                    console.log(`Skipping row with invalid data: StopID=${row.StopID}, DIVA=${row.DIVA}, MunicipalityID=${row.MunicipalityID}`);
+                }
+            } else {
+                console.log('Skipping row with missing StopID.');
+            }
         }
 
         // Commit the transaction if all inserts succeed
@@ -248,8 +253,8 @@ async function insertDataIntoDatabase(data) {
 }
 
 
-function fetchAndSyncWienerLinienDataPeriodically(StopID) {
-    setInterval(async () => {
+async function fetchAndSyncWienerLinienDataPeriodically(StopID) {
+    
         try {
             console.log('Fetching and updating Wiener Linien data...');
             
@@ -257,13 +262,13 @@ function fetchAndSyncWienerLinienDataPeriodically(StopID) {
             const newData = await fetchWienerLinienData(StopID);
 
             // Update the database with the new data
-            await updateDatabaseWithWienerLinienData(newData);
+            //await updateDatabaseWithWienerLinienData(newData);
 
             console.log('Wiener Linien data updated successfully.');
         } catch (error) {
             console.error('Error fetching and updating Wiener Linien data:', error);
         }
-    }, 30000); // Fetch and update every 30 seconds
+   // Fetch and update every 30 seconds
 }
 
 
@@ -309,4 +314,4 @@ checkDatabaseConnectionPeriodically();
 populateDatabase();
 
 
-module.exports = router
+module.exports = router;

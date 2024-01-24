@@ -1,5 +1,6 @@
 function getStopInfo() {
     const stopName = $('#stop-info-input').val();
+    console.log('Sending stopName to server:', stopName); // Debugging line
     // Send a POST request to your server with the entered stopName
     $.ajax({
         type: 'POST',

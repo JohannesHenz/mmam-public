@@ -59,6 +59,17 @@ CREATE TABLE station (
     stationName varchar(255) NOT NULL
 );
 
+CREATE TABLE journey (
+    id SERIAL PRIMARY KEY,
+    journeyID varchar(255) NOT NULL,
+    ti varchar(255) NOT NULL,
+    pr varchar(255) NOT NULL,
+    lastStop varchar(255) NOT NULL,
+    tr varchar(255) NOT NULL,
+    stationID varchar(255) NOT NULL
+    
+);
+
 CREATE TABLE settings (
     id serial PRIMARY KEY,
     latitude float NOT NULL,

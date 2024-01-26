@@ -6,15 +6,9 @@ var suggestions = {
     suggestions: []
 }
 
-$(document).ready(function () {
-    getJourneys().then(() => {
-        renderJourneysTable();
-        $('#journeysInfo').draggable({ containment: 'window'});
-    });
-});
 
 async function getJourneys() {
-    const station = document.getElementById('stop-info-input').value || 'Wien';
+    const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
     await $.ajax({
         url: '/journeys',
         type: 'GET',
@@ -23,8 +17,8 @@ async function getJourneys() {
         },
         success: function (response) {
             journeys = response;
-            console.log(journeys.journey);
-            console.log('done');
+            console.log(journeys);
+            renderJourneysTable();
         },
         error: function (error) {
             console.log(error);
@@ -33,7 +27,7 @@ async function getJourneys() {
 }
 
 async function getSuggestions() {
-    const station = document.getElementById('stop-info-input').value || 'Wien';
+    const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
     await $.ajax({
         url: '/journeys/suggestions',
         type: 'GET',
@@ -61,9 +55,9 @@ async function renderJourneysTable() {
     const tableBody = document.getElementById('journeysTableBody');
     tableBody.innerHTML = '';
     station.innerHTML = '';
-    station.innerHTML += journeys.stationName;
+    station.innerHTML += journeys[0].stationname;
     
-    journeys.journey.forEach(journey => {
+    journeys.forEach(journey => {
     // Get the current date and time
         const currentTime = new Date();
 
@@ -81,7 +75,7 @@ async function renderJourneysTable() {
       row.innerHTML = `
         <td>${journey.ti}</td>
         <td>${journey.pr}</td>
-        <td>${journey.lastStop}</td>
+        <td>${journey.laststop}</td>
         <td>${journey.tr}</td>
       `;
       tableBody.appendChild(row);

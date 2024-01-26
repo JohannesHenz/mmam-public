@@ -15,7 +15,7 @@ $(document).ready(function () {
     getSettings().then(() => {
         initEventListeners();
         initMap();
-        $('#map-settings, #stop-info').draggable({ containment: 'window'});
+        $('#map-settings, #stop-info, #stop-info-oebb').draggable({ containment: 'window'});
     })
 });
 
@@ -56,6 +56,8 @@ function initEventListeners() {
             toggleSettings();
         } else if (event.key === 'i' || event.key === 'I') {
             toggleStopInfo();
+            toggleStopInfoOebb();
+
         }  
         else if (event.key === 'j' || event.key === 'J') {
             toggleJourneysInfo();
@@ -63,16 +65,20 @@ function initEventListeners() {
     }
     });
     settingsEventListeners();
-    $('#stop-info-input').on('input', function() {
+    $('#stop-info-oebb-input').on('input', function() {
         getSuggestions();
     });
 
     $('#get-stop-info').click(function () {
         getStopInfo();
+    });
+    $('#get-stop-oebb-info').click(function () {
         getJourneys().then(() => {
-            renderJourneysTable();
+            $('#journeysInfo').draggable({ containment: 'window'});
         });
     });
+
+
 }
 
 function updateSettings() {
@@ -95,6 +101,10 @@ function toggleSettings() {
     // $('#map').toggle();
     $('#settings').toggle();
     updateSettings();
+}
+
+function toggleStopInfoOebb() {
+    $('#stop-info-oebb').toggle();
 }
 
 function toggleStopInfo() {

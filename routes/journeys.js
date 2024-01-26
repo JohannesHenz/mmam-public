@@ -16,8 +16,10 @@ router.get('/suggestions', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
+        await clearOldEntries();
         const stationId = await fetchStationId(req.query.stationName);
-        const journeys = await fetchJourney(stationId);
+        await fetchJourney(stationId);
+        const journeys = await getJourneys(stationId);
         res.json(journeys);
     } catch (err) {
         logger.error(err);
@@ -32,6 +34,16 @@ async function fetchStationId(stationName) {
             return 1292001;
         }
         return data.rows[0].stationid;
+    }
+    catch (error) {
+        logger.error(error);
+    }
+}
+
+async function printAllJourneys(stationID){
+    try {
+        const data = await database.query('SELECT * FROM journey WHERE stationID = $1', [stationID]);
+        console.log(data.rows);
     }
     catch (error) {
         logger.error(error);
@@ -63,7 +75,7 @@ async function fetchSuggestions(stationName) {
 
 async function insertStation(stationName, stationId) {
     try {
-        database.query('INSERT INTO station (stationName, stationID) VALUES ($1, $2)', [stationName, stationId]);
+        return await database.query('INSERT INTO station (stationName, stationID) VALUES ($1, $2)', [stationName, stationId]);
     }
     catch (error) {
         logger.error(error);
@@ -83,8 +95,39 @@ async function stationExists(stationId) {
     }
 }
 
+async function insertJourney(journeyId, pr, ti, tr, lastStop, stationId) {
+    try {
+        return await database.query('INSERT INTO journey (journeyID, pr, ti, tr, lastStop, stationID) VALUES ($1, $2, $3, $4, $5, $6)', [journeyId, pr, ti, tr, lastStop, stationId]);
+    }
+    catch (error) {
+        logger.error(error);
+    }
+}
+
+async function clearOldEntries() {
+    const currentTime = new Date();
+    const formattedTime = currentTime.getHours().toString().padStart(2, '0') + ':' + currentTime.getMinutes().toString().padStart(2, '0');
+    const query = 'DELETE FROM journey WHERE ti < $1';
+    const values = [formattedTime];
+    try {
+        return await database.query(query, values);
+    } catch (error) {
+        logger.error(error);
+    }
+}
+async function getJourneys(stationId) {
+    try {
+        const data = await database.query('SELECT * FROM journey INNER JOIN station ON journey.stationID = station.stationID WHERE journey.stationID = $1'
+        , [stationId]);
+        return data.rows;
+    }
+    catch (error) {
+        logger.error(error);
+    }
+}
+
+
 async function fetchJourney(stationId) {
-    stationId = stationId;
     const url = `https://fahrplan.oebb.at/bin/stboard.exe/dn?L=vs_scotty.vs_liveticker&evaId=${stationId}&boardType=dep&time=now&productsFilter=1011111111011&additionalTime=0&maxJourneys=50&outputMode=tickerDataOnly&start=yes&selectDate=today`;
     try {
         const response = await axios.get(url);
@@ -92,8 +135,15 @@ async function fetchJourney(stationId) {
         response.data = response.data.replace(/journeysObj = /g, '');
         //parse string to json
         response.data = JSON.parse(response.data);
-        //TODO databse insert
-        return response.data;
+        //insert into database
+        return await Promise.all(response.data.journey.map(async (journey) => {
+            const journeyId = journey.id;
+            const pr = journey.pr;
+            const ti = journey.ti;
+            const tr = journey.tr;
+            const lastStop = journey.lastStop;
+            await insertJourney(journeyId, pr, ti, tr, lastStop, stationId);
+        }));
     } catch (error) {
         logger.error(error);
         throw error;

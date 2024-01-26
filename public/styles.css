@@ -38,6 +38,7 @@ table {
     padding: 0;
 }
 
+
 .table-container {
     max-height: 200px;
     overflow-y: auto;
@@ -45,11 +46,9 @@ table {
 
 #journeysInfo {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 100px;
+    right: 0px;
     z-index: 500;
-    margin: 10px;
-    padding: 10px;
     max-width: 600px;
 }
 
@@ -61,6 +60,15 @@ table {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 500;
+    margin: 0;
+    padding: 0;
+}
+
+#stop-info-oebb {
+    position: absolute;
+    top: 0;
+    left: 500px;
     z-index: 500;
     margin: 0;
     padding: 0;

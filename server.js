@@ -22,13 +22,6 @@ server.use((request, response, next) => {
     next();
 });
 
-
-server.use((request, response, next) => {
-    logger.debug(`${request.ip}: ${request.method} ${request.url}`);
-    next();
-});
-
-
 require('./routes')(server);
 
 server.listen(port, () => {

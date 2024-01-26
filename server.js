@@ -5,7 +5,6 @@ const express = require('express');
 const server = express();
 const cors = require('cors');
 const path = require('path');
-const wienerLinienRoute = require('./routes/stop-info');
 
 const port = 3313;
 
@@ -13,7 +12,6 @@ const port = 3313;
 server.set('view engine', 'ejs');
 server.use(bodyParser.json());
 server.use(cors());
-server.use(wienerLinienRoute);
 server.use(express.static(__dirname + '/public'));
 server.use(favicon(path.join(__dirname, '/public', 'favicon.ico')));
 

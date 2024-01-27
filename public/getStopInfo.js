@@ -9,7 +9,6 @@ function getStopInfo() {
         Accept: 'application/json',
         data: JSON.stringify({ stopName: stopName }),
         success: function (response) {
-         
             displayStopInfo(response);
         },
         error: function (error) {

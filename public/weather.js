@@ -7,7 +7,7 @@ $(document).ready(function () {
 
 function main() {
     testCall(AJAX_RETRY_COUNT);
-    setTimeout(main, 2000);
+    setTimeout(main, 1000);
 }
 
 function testCall(retries) {
@@ -45,9 +45,15 @@ function updateWeatherDisplay(data) {
     const weatherImg = $('<img>').attr('src', `https://openweathermap.org/img/wn/${data.weather_icon}.png`);
     const temperature = $('<p>').text(`${data.main_temp || 'N/A'}°C`);
     const logoImg = $('<img>').attr('src', 'FH_Technikum_Wien_logo.svg.png').addClass('logo');;
-    const timestamp = $('<p>').text(`${epochTimeToDate(data.timestamp) || 'N/A'}`);
-
-    weatherDiv.append(weatherImg, temperature, logoImg, timestamp);
+    let currentDateTime = new Date();
+    let datetime = currentDateTime.getFullYear() + "-"
+        + String(currentDateTime.getMonth() + 1).padStart(2, '0') + "-"
+        + String(currentDateTime.getDate()).padStart(2, '0') + " "
+        + String(currentDateTime.getHours()).padStart(2, '0') + ":"
+        + String(currentDateTime.getMinutes()).padStart(2, '0') + ":"
+        + String(currentDateTime.getSeconds()).padStart(2, '0');
+    const time = $('<p>').text(`${datetime}`);
+    weatherDiv.append(weatherImg, temperature, logoImg, time);
 }
 
 function epochTimeToDate(timestamp) {

@@ -6,7 +6,6 @@ var suggestions = {
     suggestions: []
 }
 
-
 async function getJourneys() {
     const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
     await $.ajax({

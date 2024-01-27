@@ -3,13 +3,10 @@ body {
     padding: 0;
 }
 
-
-
 #map {
     margin: 0;
     padding: 0;
     height: 100vh;
-    
 }
 
 #test {
@@ -84,8 +81,7 @@ table {
     left: 10px;
     z-index: 1000;
     padding: 10px;
-    max-width: 600px;
-    background-color: rgba(0, 0, 0, 0.8);
+    max-width: 574px;
     color: white;
     border-radius: 5px;
 }
@@ -102,7 +98,6 @@ table {
 }
 
 #stop-info-window th {
-    background-color: rgba(0, 0, 0, 0.8);
     color: white;
 }
 
@@ -114,8 +109,6 @@ table {
     background-color: rgba(0, 0, 0, 0.7);
     cursor: pointer;
 }
-
-
 
 #weather {
     display: flex;

@@ -15,7 +15,7 @@ $(document).ready(function () {
     getSettings().then(() => {
         initEventListeners();
         initMap();
-        $('#map-settings, #stop-info, #stop-info-oebb').draggable({ containment: 'window'});
+        $('#map-settings, #stop-info, #stop-info-oebbm, #stop-info-settings').draggable({ containment: 'window'});
     })
 });
 

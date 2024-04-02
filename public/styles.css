@@ -1,6 +1,7 @@
 body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 #map {
@@ -55,9 +56,9 @@ table {
 
 #stop-info {
     position: absolute;
-    top: 0;
+    top: 300;
     left: 0;
-    z-index: 500;
+    z-index: 800;
     margin: 0;
     padding: 0;
 }
@@ -76,8 +77,8 @@ table {
 }
 
 #stop-info-window {
-    position: absolute;
-    bottom: 1200px;
+    position: fixed;
+    top: -1500px;
     left: 10px;
     z-index: 1000;
     padding: 10px;
@@ -86,6 +87,19 @@ table {
     border-radius: 5px;
 }
 
+/*
+#stop-info-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    padding: 10px;
+    max-width: 574px;
+    color: white;
+    border-radius: 5px;
+}
+*/
 #stop-info-window table {
     width: 100%;
     border-collapse: collapse;

@@ -25,7 +25,12 @@ async function fetchOpenWeather() {
     const lang = 'en';
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=${units}&lang=${lang}&appid=${apiKey}`;
     return await axios.get(url).then((response) => {
-        database.query('INSERT INTO weather (timestamp, timezone, longitude, latitude, weather_id, weather_main, weather_description, weather_icon, main_temp, main_pressure, main_humidity, main_temp_min, main_temp_max, wind_speed, wind_deg, wind_gust, clouds_all) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $11, $12, $13, $14, $15, $16, $17)', [
+        database.query(`
+            INSERT INTO weather (timestamp, timezone, longitude, latitude, weather_id, weather_main, weather_description, weather_icon, main_temp, main_pressure, main_humidity, main_temp_min, main_temp_max, wind_speed, wind_deg, wind_gust, clouds_all) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $11, $12, $13, $14, $15, $16, $17)
+            ON CONFLICT (timestamp, longitude, latitude) 
+            DO UPDATE SET weather_id = EXCLUDED.weather_id, weather_main = EXCLUDED.weather_main, weather_description = EXCLUDED.weather_description, weather_icon = EXCLUDED.weather_icon, main_temp = EXCLUDED.main_temp, main_pressure = EXCLUDED.main_pressure, main_humidity = EXCLUDED.main_humidity, main_temp_min = EXCLUDED.main_temp_min, main_temp_max = EXCLUDED.main_temp_max, wind_speed = EXCLUDED.wind_speed, wind_deg = EXCLUDED.wind_deg, wind_gust = EXCLUDED.wind_gust, clouds_all = EXCLUDED.clouds_all
+        `, [
             response.data.dt,
             response.data.timezone,
             response.data.coord.lon,

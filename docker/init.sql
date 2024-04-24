@@ -77,7 +77,8 @@ CREATE TABLE settings (
     zoom float NOT NULL
 );
 
-
+ALTER TABLE station ADD CONSTRAINT station_id_unique UNIQUE (stationID);
+ALTER TABLE weather ADD CONSTRAINT weather_timestamp_longitude_latitude_unique UNIQUE (timestamp, longitude, latitude);
 
 INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
 

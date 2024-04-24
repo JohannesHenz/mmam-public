@@ -97,7 +97,10 @@ async function stationExists(stationId) {
 
 async function insertJourney(journeyId, pr, ti, tr, lastStop, stationId) {
     try {
-        return await database.query('INSERT INTO journey (journeyID, pr, ti, tr, lastStop, stationID) VALUES ($1, $2, $3, $4, $5, $6)', [journeyId, pr, ti, tr, lastStop, stationId]);
+        const data = await database.query('SELECT * FROM journey WHERE journeyID = $1', [journeyId]);
+        if (data.rows.length === 0) {
+            return await database.query('INSERT INTO journey (journeyID, pr, ti, tr, lastStop, stationID) VALUES ($1, $2, $3, $4, $5, $6)', [journeyId, pr, ti, tr, lastStop, stationId]);
+        }
     }
     catch (error) {
         logger.error(error);
@@ -131,6 +134,7 @@ async function fetchJourney(stationId) {
     const url = `https://fahrplan.oebb.at/bin/stboard.exe/dn?L=vs_scotty.vs_liveticker&evaId=${stationId}&boardType=dep&time=now&productsFilter=1011111111011&additionalTime=0&maxJourneys=50&outputMode=tickerDataOnly&start=yes&selectDate=today`;
     try {
         const response = await axios.get(url);
+       
         //replace 'journeysObj =' 
         response.data = response.data.replace(/journeysObj = /g, '');
         //parse string to json

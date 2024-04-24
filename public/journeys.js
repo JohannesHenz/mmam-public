@@ -6,6 +6,20 @@ var suggestions = {
     suggestions: []
 }
 
+function debounce(func, wait) {
+    let timeout;
+
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
 async function getJourneys() {
     const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
     await $.ajax({
@@ -48,6 +62,17 @@ async function getSuggestions() {
         }
     });
 }
+
+// Debounce getSuggestions with a delay of 300ms
+const debouncedGetSuggestions = debounce(getSuggestions, 300);
+
+// Use the debounced function instead of the original one
+document.getElementById('stop-info-oebb-input').addEventListener('input', debouncedGetSuggestions);
+
+// Add event listener to 'Get Arrival Times' button
+document.getElementById('get-arrival-times-button').addEventListener('click', getJourneys);
+
+// ... rest of your code
 
 async function renderJourneysTable() {
     const station = document.getElementById('station');

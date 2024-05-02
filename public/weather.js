@@ -50,29 +50,54 @@ function updateWeatherDisplay(data) {
     "src",
     `https://openweathermap.org/img/wn/${data.weather_icon}.png`
   );
-  const temperature = $("<p>").html(
-    `${forecast[0].temperature || "N/A"}°C
-    <br>In 1 Std.: ${forecast[1].temperature}°C
-    <br>In 3 Std.: ${forecast[3].temperature}°C `
+  const currentTemperature = $("<span>").html(
+    `${forecast[0].temperature || "N/A"}°C`
   );
+
+  const temp1Std = $("<div>");
+  temp1Std.addClass("temp-forecast");
+  temp1Std.append($("<h6>").html("1 Std"));
+  temp1Std.append($("<h4>").html(`${forecast[1].temperature}°C`));
+
+  const temp3Std = $("<div>");
+  temp3Std.addClass("temp-forecast");
+  temp3Std.append($("<h6>").html("3 Std"));
+  temp3Std.append($("<h4>").html(`${forecast[3].temperature}°C`));
+
   const logoImg = $("<img>")
     .attr("src", "FH_Technikum_Wien_logo.svg.png")
     .addClass("logo");
   let currentDateTime = new Date();
   let datetime =
-    currentDateTime.getFullYear() +
-    "-" +
-    String(currentDateTime.getMonth() + 1).padStart(2, "0") +
-    "-" +
-    String(currentDateTime.getDate()).padStart(2, "0") +
-    "<br>" +
-    String(currentDateTime.getHours()).padStart(2, "0") +
+    formatDate(currentDateTime) + "<br>" + formatTime(currentDateTime);
+
+  const time = $("<p>").html(`${datetime}`).addClass("datetime");
+  weatherDiv.append(
+    weatherImg,
+    currentTemperature,
+    temp1Std,
+    temp3Std,
+    time,
+    logoImg
+  );
+}
+
+function formatDate(date) {
+  return (
+    String(date.getDate()).padStart(2, "0") +
+    "." +
+    String(date.getMonth() + 1).padStart(2, "0") +
+    "." +
+    date.getFullYear()
+  );
+}
+
+function formatTime(date) {
+  return (
+    String(date.getHours()).padStart(2, "0") +
     ":" +
-    String(currentDateTime.getMinutes()).padStart(2, "0") +
-    ":" +
-    String(currentDateTime.getSeconds()).padStart(2, "0");
-  const time = $("<p>").html(`${datetime}`);
-  weatherDiv.append(weatherImg, temperature, time, logoImg);
+    String(date.getMinutes()).padStart(2, "0")
+  );
 }
 
 function epochTimeToDate(timestamp) {

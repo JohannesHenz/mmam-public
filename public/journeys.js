@@ -66,13 +66,19 @@ async function getSuggestions() {
 // Debounce getSuggestions with a delay of 300ms
 const debouncedGetSuggestions = debounce(getSuggestions, 300);
 
-// Use the debounced function instead of the original one
-document.getElementById('stop-info-oebb-input').addEventListener('input', debouncedGetSuggestions);
+document.addEventListener('DOMContentLoaded', function() {
+    // Use the debounced function instead of the original one
+    const stopInfoInput = document.getElementById('stop-info-oebb-input');
+    if(stopInfoInput) {
+        stopInfoInput.addEventListener('input', debouncedGetSuggestions);
+    }
 
-// Add event listener to 'Get Arrival Times' button
-document.getElementById('get-arrival-times-button').addEventListener('click', getJourneys);
-
-// ... rest of your code
+    // Add event listener to 'Get Arrival Times' button
+    const getArrivalTimesButton = document.getElementById('get-arrival-times-button');
+    if(getArrivalTimesButton) {
+        getArrivalTimesButton.addEventListener('click', getJourneys);
+    }
+});
 
 async function renderJourneysTable() {
     const station = document.getElementById('station');

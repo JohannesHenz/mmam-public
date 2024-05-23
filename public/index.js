@@ -12,14 +12,36 @@ var journeys = {
 var map = null;
 
 $(document).ready(function () {
+    
     getSettings().then(() => {
+        
         initEventListeners();
         initMap();
         $('#map-settings, #stop-info, #stop-info-oebbm, #stop-info-settings').draggable({ containment: 'window'});
+        // Request user's location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                settings.latitude = position.coords.latitude;
+                settings.longitude = position.coords.longitude;
+                map.setView([settings.latitude, settings.longitude], settings.zoom);
+            }, function(error) {
+                console.log("GeoLocation Error occurred. Error code: " + error.code);
+
+            });
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+            // Fallback to IP-based geolocation
+            $.get("https://ipapi.co/json", function(response) {
+                settings.latitude = response.latitude;
+                settings.longitude = response.longitude;
+                map.setView([settings.latitude, settings.longitude], settings.zoom);
+            }, "jsonp");
+        }
     })
 });
 
 async function getSettings() {
+   
     await $.ajax({
         url: '/settings',
         type: 'GET',
@@ -38,6 +60,9 @@ async function getSettings() {
 }
 
 function initMap() {
+    if (map) { // if map is already initialized
+        map.remove(); // remove the existing map
+    }
     map = L.map('map').setView([settings.latitude, settings.longitude], settings.zoom);
     zoomLock(settings.zoomLock);
     panLock(settings.panLock);
@@ -96,6 +121,9 @@ function updateSettings() {
         $('#zoom-lock').prop('checked', false);
     }
 }
+
+
+
 
 function toggleSettings() {
     // $('#map').toggle();

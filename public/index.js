@@ -49,8 +49,8 @@ async function getSettings() {
             settings.latitude = response.latitude;
             settings.longitude = response.longitude;
             settings.zoom = response.zoom;
-            settings.panLock = true;
-            settings.zoomLock = true;
+            settings.panLock = false; 
+            settings.zoomLock = false;
             console.log('done');
         },
         error: function (error) {
@@ -59,18 +59,21 @@ async function getSettings() {
     });
 }
 
-function initMap() {
+async function initMap() {
+    //await getSettings();
+    
     if (map) { // if map is already initialized
         map.remove(); // remove the existing map
-    }
+    } 
+
     map = L.map('map').setView([settings.latitude, settings.longitude], settings.zoom);
-    zoomLock(settings.zoomLock);
-    panLock(settings.panLock);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 100,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     map.removeControl(map.zoomControl);
+    zoomLock(settings.zoomLock);
+    panLock(settings.panLock);
 }
 
 function initEventListeners() {

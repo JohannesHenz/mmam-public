@@ -1,3 +1,5 @@
+const { setLocation } = require('../utils/location');
+
 var settings = {
     latitude: 0,
     longitude: 0,
@@ -24,6 +26,9 @@ $(document).ready(function () {
                 settings.latitude = position.coords.latitude;
                 settings.longitude = position.coords.longitude;
                 map.setView([settings.latitude, settings.longitude], settings.zoom);
+
+                setLocation(settings.latitude, settings.longitude);
+
             }, function(error) {
                 console.log("GeoLocation Error occurred. Error code: " + error.code);
 
@@ -35,6 +40,7 @@ $(document).ready(function () {
                 settings.latitude = response.latitude;
                 settings.longitude = response.longitude;
                 map.setView([settings.latitude, settings.longitude], settings.zoom);
+                setLocation(settings.latitude, settings.longitude);
             }, "jsonp");
         }
     })

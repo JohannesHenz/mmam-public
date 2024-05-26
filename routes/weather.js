@@ -2,6 +2,7 @@ const database = require("../database");
 const router = require("express-promise-router")();
 const axios = require("axios");
 const logger = require("../utils/logger");
+const { getLocation } = require('../utils/location'); // Get location from the shared module
 
 router.get("/", async (request, response) => {
   /*
@@ -23,9 +24,14 @@ async function fetchWeather() {
 }
 async function fetchOpenWeather() {
   logger.debug("fetchOpenWeather()");
+  
   const apiKey = "1af530a8a7429bd4fb34d410aca8f0b0"; // TODO: dotenv
-  const longitude = 16.377324101340463;
-  const latitude = 48.23931877070726;
+
+  const { latitude, longitude } = getLocation(); // Get location from the shared module
+
+  if (!latitude || !longitude) {
+    throw new Error('User location is not available');
+  }
   const units = "metric";
   const lang = "en";
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=${units}&lang=${lang}&appid=${apiKey}`;
@@ -69,9 +75,13 @@ async function fetchOpenWeather() {
 
 async function fetchForecast() {
   logger.debug("fetchForecast()");
-  const longitude = 16.377324101340463;
-  const latitude = 48.23931877070726;
+  
+  const { latitude, longitude } = getLocation(); // Get location from the shared module
 
+  if (!latitude || !longitude) {
+    throw new Error('User location is not available');
+  }
+  
   const now = new Date();
   const start = new Date(now.setMinutes(0, 0, 0));
   const end = new Date(start.getTime() + 6 * 60 * 60 * 1000); // Add 6 hours

@@ -1,4 +1,4 @@
-const { setLocation } = require('../utils/location');
+
 
 var settings = {
     latitude: 0,
@@ -14,37 +14,60 @@ var journeys = {
 var map = null;
 
 $(document).ready(function () {
-    
     getSettings().then(() => {
-        
-        initEventListeners();
-        initMap();
-        $('#map-settings, #stop-info, #stop-info-oebbm, #stop-info-settings').draggable({ containment: 'window'});
-        // Request user's location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                settings.latitude = position.coords.latitude;
-                settings.longitude = position.coords.longitude;
-                map.setView([settings.latitude, settings.longitude], settings.zoom);
-
-                setLocation(settings.latitude, settings.longitude);
-
-            }, function(error) {
-                console.log("GeoLocation Error occurred. Error code: " + error.code);
-
-            });
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-            // Fallback to IP-based geolocation
-            $.get("https://ipapi.co/json", function(response) {
-                settings.latitude = response.latitude;
-                settings.longitude = response.longitude;
-                map.setView([settings.latitude, settings.longitude], settings.zoom);
-                setLocation(settings.latitude, settings.longitude);
-            }, "jsonp");
-        }
-    })
-});
+      initEventListeners();
+      initMap();
+      $('#map-settings, #stop-info, #stop-info-oebbm, #stop-info-settings').draggable({ containment: 'window' });
+  
+      // Request user's location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          settings.latitude = position.coords.latitude;
+          settings.longitude = position.coords.longitude;
+          map.setView([settings.latitude, settings.longitude], settings.zoom);
+  
+          // Send user location to the server
+          $.ajax({
+            type: 'POST',
+            url: '/location/set',
+            contentType: 'application/json',
+            data: JSON.stringify({ latitude: settings.latitude, longitude: settings.longitude }),
+            success: function (response) {
+              console.log('Location set successfully:', response);
+            },
+            error: function (error) {
+              console.error('Error setting location:', error);
+            }
+          });
+        }, function (error) {
+          console.log("GeoLocation Error occurred. Error code: " + error.code);
+        });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+        // Fallback to IP-based geolocation
+        $.get("https://ipapi.co/json", function (response) {
+          settings.latitude = response.latitude;
+          settings.longitude = response.longitude;
+          map.setView([settings.latitude, settings.longitude], settings.zoom);
+  
+          // Send user location to the server
+          $.ajax({
+            type: 'POST',
+            url: '/location/set',
+            contentType: 'application/json',
+            data: JSON.stringify({ latitude: response.latitude, longitude: response.longitude }),
+            success: function (response) {
+              console.log('Location set successfully:', response);
+            },
+            error: function (error) {
+              console.error('Error setting location:', error);
+            }
+          });
+        }, "jsonp");
+      }
+    });
+  });
+  
 
 async function getSettings() {
    

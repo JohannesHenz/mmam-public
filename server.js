@@ -5,6 +5,7 @@ const express = require('express');
 const server = express();
 const cors = require('cors');
 const path = require('path');
+const routes = require('./routes');
 
 const port = 3313;
 
@@ -19,6 +20,12 @@ server.use((request, response, next) => {
     console.log(`Request: ${request.method} ${request.url}`);
     next();
 });
+
+server.use('/location', require('./routes/location'));
+
+// Include other routes
+server.use('/weather', require('./routes/weather'));
+
 
 require('./routes')(server);
 

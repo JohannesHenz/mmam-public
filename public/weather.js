@@ -44,25 +44,14 @@ function updateWeatherDisplay(data) {
     return;
   }
 
-  const forecast = data.forecast;
+  const forecast = data;
 
-  const weatherImg = $("<img>").attr(
-    "src",
-    `https://openweathermap.org/img/wn/${data.weather_icon}.png`
-  );
+  const weatherImg = $("<img>").attr("src", getSymbolUrl(forecast[0]));
   const currentTemperature = $("<span>").html(
     `${forecast[0].temperature || "N/A"}°C`
   );
 
-  const temp1Std = $("<div>");
-  temp1Std.addClass("temp-forecast");
-  temp1Std.append($("<h6>").html("1 Std"));
-  temp1Std.append($("<h4>").html(`${forecast[1].temperature}°C`));
-
-  const temp3Std = $("<div>");
-  temp3Std.addClass("temp-forecast");
-  temp3Std.append($("<h6>").html("3 Std"));
-  temp3Std.append($("<h4>").html(`${forecast[3].temperature}°C`));
+  const forecastDiv = $("<div>").addClass("temp-forecast");
 
   const logoImg = $("<img>")
     .attr("src", "FH_Technikum_Wien_logo.svg.png")
@@ -72,14 +61,48 @@ function updateWeatherDisplay(data) {
     formatDate(currentDateTime) + "<br>" + formatTime(currentDateTime);
 
   const time = $("<p>").html(`${datetime}`).addClass("datetime");
-  weatherDiv.append(
-    weatherImg,
-    currentTemperature,
-    temp1Std,
-    temp3Std,
-    time,
-    logoImg
-  );
+  weatherDiv.append(weatherImg, currentTemperature, forecastDiv, time, logoImg);
+  displayForecast(data, 0); // Start with the first hour forecast
+}
+
+function displayForecast(forecastData, index) {
+  const forecastDiv = $(".temp-forecast");
+  forecastDiv.empty(); // Clear previous forecast
+
+  if (index >= forecastData.length) {
+    index = 0; // Reset index if it exceeds available data
+  }
+
+  const hourLabel = (index + 1) * 1; // Calculate the hour label dynamically
+  forecastDiv.append($("<h6>").html(`${hourLabel} Std`));
+  forecastDiv.append($("<h4>").html(`${forecastData[index].temperature}°C`));
+
+  // Set to update to next forecast after 2 seconds
+  setTimeout(() => displayForecast(forecastData, index + 1), 2000);
+}
+
+function getSymbolUrl(forecastData) {
+  const timestamp = forecastData.timestamp;
+  const symbol = forecastData.symbol;
+
+  // Parse the timestamp to a Date object
+  const date = new Date(timestamp);
+
+  // Get the hour of the day from the Date object
+  const hour = date.getUTCHours();
+
+  // Determine the prefix based on the time
+  const isNight = hour >= 18 || hour < 6;
+  let prefix = isNight ? "nsymb" : "symb";
+
+  // If the symbol is a single digit, prepend a '0' to the symbol
+  const symbolString = symbol < 10 ? `0${symbol}` : `${symbol}`;
+
+  // Concatenate the prefix and the symbol string
+  const imageName = prefix + symbolString;
+  const urlPath = isNight ? "www_mond" : "www_sonne";
+
+  return `https://www.zamg.ac.at/zamgWeb/common/img/${urlPath}/${imageName}.png`;
 }
 
 function formatDate(date) {
@@ -98,14 +121,4 @@ function formatTime(date) {
     ":" +
     String(date.getMinutes()).padStart(2, "0")
   );
-}
-
-function epochTimeToDate(timestamp) {
-  var options = {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  return new Date(timestamp * 1000).toLocaleDateString("de-AT", options);
 }

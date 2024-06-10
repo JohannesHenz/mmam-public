@@ -7,6 +7,8 @@ $(document).ready(function () {
   main();
 });
 
+let currentWeatherUpdate;
+
 function main() {
   testCall(AJAX_RETRY_COUNT);
   setTimeout(main, RETRY_DELAY_SECONDS * 1000);
@@ -62,7 +64,7 @@ function updateWeatherDisplay(data) {
 
   const time = $("<p>").html(`${datetime}`).addClass("datetime");
   weatherDiv.append(weatherImg, currentTemperature, forecastDiv, time, logoImg);
-  displayForecast(data, 0); // Start with the first hour forecast
+  displayForecast(data, 1); // Start with the first hour forecast
 }
 
 function displayForecast(forecastData, index) {
@@ -70,15 +72,22 @@ function displayForecast(forecastData, index) {
   forecastDiv.empty(); // Clear previous forecast
 
   if (index >= forecastData.length) {
-    index = 0; // Reset index if it exceeds available data
+    index = 1; // Reset index if it exceeds available data
   }
-
-  const hourLabel = (index + 1) * 1; // Calculate the hour label dynamically
-  forecastDiv.append($("<h6>").html(`${hourLabel} Std`));
+  // Calculate the hour label dynamically
+  forecastDiv.append($("<h6>").html(`${index} Std`));
   forecastDiv.append($("<h4>").html(`${forecastData[index].temperature}°C`));
 
+  //Reset the timer in case it exists already from a previous weather call
+  if (currentWeatherUpdate) {
+    clearTimeout(currentWeatherUpdate);
+  }
+
   // Set to update to next forecast after 2 seconds
-  setTimeout(() => displayForecast(forecastData, index + 1), 2000);
+  currentWeatherUpdate = setTimeout(
+    () => displayForecast(forecastData, index + 1),
+    2000
+  );
 }
 
 function getSymbolUrl(forecastData) {

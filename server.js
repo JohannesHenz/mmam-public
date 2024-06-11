@@ -1,20 +1,22 @@
+require('dotenv').config();
+const fs = require('fs');
+const https = require('https');
+const express = require('express');
 const logger = require('./utils/logger');
 const favicon = require('serve-favicon');
 const bodyParser = require('body-parser');
-const express = require('express');
-const server = express();
 const cors = require('cors');
 const path = require('path');
 const routes = require('./routes');
 
 const port = 3313;
 
-
+const server = express();
 server.set('view engine', 'ejs');
 server.use(bodyParser.json());
 server.use(cors());
-server.use(express.static(__dirname + '/public'));
-server.use(favicon(path.join(__dirname, '/public', 'favicon.ico')));
+server.use(express.static(path.join(__dirname, 'public')));
+server.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 server.use((request, response, next) => {
     console.log(`Request: ${request.method} ${request.url}`);
@@ -26,9 +28,15 @@ server.use('/location', require('./routes/location'));
 // Include other routes
 server.use('/weather', require('./routes/weather'));
 
+routes(server);
 
-require('./routes')(server);
+// Load SSL certificate and key
+const options = {
+  key: fs.readFileSync('/usr/src/app/certs/key.pem'),
+  cert: fs.readFileSync('/usr/src/app/certs/cert.pem')
+};
 
-server.listen(port, () => {
-    logger.success(`Listening: http://localhost:${port}`);
+// Create HTTPS server
+https.createServer(options, server).listen(port, () => {
+    logger.success(`Listening: https://localhost:${port}`);
 });

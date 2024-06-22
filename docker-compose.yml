@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  database:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  app:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.app
+    depends_on:
+      - database
+    volumes:
+      - ./docker/cert.pem:/usr/src/app/certs/cert.pem
+      - ./docker/key.pem:/usr/src/app/certs/key.pem
+    ports:
+      - "3313:3313"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@database:5432/postgres
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
+
+volumes:
+  db_data:

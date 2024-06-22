@@ -18,9 +18,11 @@ $(document).ready(function () {
     $(
       "#map-settings, #stop-info, #stop-info-oebbm, #stop-info-settings"
     ).draggable({ containment: "window" });
-
+    if (settings.latitude && settings.longitude) {
+      setLocation(settings.latitude, settings.longitude);
+    }
     // Request user's location
-    if (navigator.geolocation) {
+    else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         function (position) {
           settings.latitude = position.coords.latitude;
@@ -28,21 +30,7 @@ $(document).ready(function () {
           map.setView([settings.latitude, settings.longitude], settings.zoom);
 
           // Send user location to the server
-          $.ajax({
-            type: "POST",
-            url: "/location/set",
-            contentType: "application/json",
-            data: JSON.stringify({
-              latitude: settings.latitude,
-              longitude: settings.longitude,
-            }),
-            success: function (response) {
-              console.log("Location set successfully:", response);
-            },
-            error: function (error) {
-              console.error("Error setting location:", error);
-            },
-          });
+          setLocation(settings.latitude, settings.longitude);
         },
         function (error) {
           console.log("GeoLocation Error occurred. Error code: " + error.code);
@@ -59,27 +47,31 @@ $(document).ready(function () {
           map.setView([settings.latitude, settings.longitude], settings.zoom);
 
           // Send user location to the server
-          $.ajax({
-            type: "POST",
-            url: "/location/set",
-            contentType: "application/json",
-            data: JSON.stringify({
-              latitude: response.latitude,
-              longitude: response.longitude,
-            }),
-            success: function (response) {
-              console.log("Location set successfully:", response);
-            },
-            error: function (error) {
-              console.error("Error setting location:", error);
-            },
-          });
+          setLocation(settings.latitude, settings.longitude);
         },
         "jsonp"
       );
     }
   });
 });
+
+function setLocation(latitude, longitude) {
+  $.ajax({
+    type: "POST",
+    url: "/location/set",
+    contentType: "application/json",
+    data: JSON.stringify({
+      latitude: latitude,
+      longitude: longitude,
+    }),
+    success: function (response) {
+      console.log("Location set successfully:", response);
+    },
+    error: function (error) {
+      console.error("Error setting location:", error);
+    },
+  });
+}
 
 async function getSettings() {
   await $.ajax({

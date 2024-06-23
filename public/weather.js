@@ -16,7 +16,7 @@ function main() {
 
 function testCall(retries) {
   $.ajax({
-    url: "http://localhost:3313/weather",
+    url: "https://localhost:3313/weather",
     type: "GET",
     dataType: "json",
     success: function (data, status, xhr) {

@@ -12,8 +12,8 @@ RUN npm install
 COPY . .
 
 # Copy the SSL certificates
-COPY cert.pem /usr/src/app/certs/cert.pem
-COPY key.pem /usr/src/app/certs/key.pem
+COPY ./docker/cert.pem /usr/src/app/certs/cert.pem
+COPY ./docker/key.pem /usr/src/app/certs/key.pem
 
 # Expose port 3313
 EXPOSE 3313

@@ -50,7 +50,7 @@ class Database {
 }
 
 const database = new Database({
-  host: "localhost",
+  host: "database",
   port: 5432,
   database: "mmam",
   user: "postgres",

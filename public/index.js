@@ -211,6 +211,21 @@ function settingsEventListeners() {
     panLock(settings.panLock);
     getSettings();
   });
+  $("#map-settings-detect").click(function () {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        settings.latitude = position.coords.latitude;
+        settings.longitude = position.coords.longitude;
+        map.setView([settings.latitude, settings.longitude], settings.zoom);
+
+        // Send user location to the server
+        setLocation(settings.latitude, settings.longitude);
+      },
+      function (error) {
+        console.log("GeoLocation Error occurred. Error code: " + error.code);
+      }
+    );
+  });
   $("#map-settings-save").click(function () {
     settings.latitude = map.getCenter().lat;
     settings.longitude = map.getCenter().lng;

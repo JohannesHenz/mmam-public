@@ -1,10 +1,10 @@
-<!-- mmam/views/stop-info.ejs -->
-
 <div id="stop-info-oebb" style="display: none">
     <div class="card shadow-lg" id="stop-info-oebb-settings">
-        <!-- Similar structure to settings window -->
-        <div class="card-header">
+        <!-- Card Header with Close Button -->
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mt-1">Stop Info ÖBB</h5>
+            <!-- Close Button (X) -->
+            <button type="button" class="btn-close" id="close-stop-info-oebb" aria-label="Close"></button>
         </div>
         <div class="card-body form-group">
             <form>
@@ -14,7 +14,7 @@
                     <datalist id="suggestions"></datalist>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-primary" type="button" id="get-stop-oebb-info">Get Arrival Times</button>
+                    <button class="btn btn-primary" type="button" id="get-arrival-times-button">Get Arrival Times</button>
                 </div>
             </form>
         </div>

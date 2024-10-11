@@ -20,13 +20,15 @@ services:
     depends_on:
       - database
     volumes:
-      - ./docker/cert.pem:/usr/src/app/certs/cert.pem
-      - ./docker/key.pem:/usr/src/app/certs/key.pem
+            - ./docker/cert.pem:/usr/src/app/certs/cert.pem
+            - ./docker/key.pem:/usr/src/app/certs/key.pem
     ports:
       - "3313:3313"
     environment:
+      NODE_ENV: development  # Set environment to development for hot-reloading replace with production if not in development
       DATABASE_URL: postgres://postgres:postgres@database:5432/postgres
       OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
+    command: npm run dev  # Run nodemon for development hot-reloading
 
 volumes:
   db_data:

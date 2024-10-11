@@ -30,7 +30,7 @@ table {
 #settings {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 100px;
   z-index: 500;
   margin: 0;
   padding: 0;
@@ -169,3 +169,48 @@ table {
   object-fit: contain;
   margin: 0 25px;
 }
+
+/* Small burger icon in the top-left corner */
+.burger-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+/* Collapse menu to appear under the burger icon */
+.collapse-menu {
+  position: absolute;
+  top: 50px; /* Adjust as needed to position the menu */
+  left: 20px;
+  width: 200px;
+  background-color: #343a40;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.collapse-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.collapse-menu ul li {
+  padding: 10px;
+  text-align: left;
+}
+
+.collapse-menu ul li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.collapse-menu ul li a:hover {
+  background-color: #007bff;
+}
+
+.navbar-toggler-icon {
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"%3E%3Cpath stroke="rgba(0, 0, 0, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/%3E%3C/svg%3E') !important;
+}
+

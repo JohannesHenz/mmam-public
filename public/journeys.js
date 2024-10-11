@@ -21,7 +21,29 @@ function debounce(func, wait) {
 };
 
 async function getJourneys() {
-    const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
+    const stationInput = document.getElementById('stop-info-oebb-input');
+    const station = stationInput.value || 'Wien'; // Get the station name
+
+    // Get selected station’s latitude and longitude
+    const selectedOption = $('#suggestions').find(`option[value="${station}"]`);
+    let latitude = selectedOption.data('lat');
+    let longitude = selectedOption.data('lon');
+
+    // Insert a dot after the first two digits for both latitude and longitude
+    if (latitude && longitude) {
+        latitude = insertDotAfterFirstTwoDigits(latitude);
+        longitude = insertDotAfterFirstTwoDigits(longitude);
+
+        // Convert to float before using
+        const latitudeFloat = parseFloat(latitude);
+        const longitudeFloat = parseFloat(longitude);
+
+        setLocation(latitudeFloat, longitudeFloat);
+
+        // Drop a pin with the station name
+        dropPin(latitudeFloat, longitudeFloat, station); // Pass station name here
+    }
+
     await $.ajax({
         url: '/journeys',
         type: 'GET',
@@ -39,6 +61,18 @@ async function getJourneys() {
     });
 }
 
+// Helper function to insert a dot after the first two digits
+function insertDotAfterFirstTwoDigits(coordinate) {
+    const coordinateStr = coordinate.toString();
+
+    // Insert dot after the first two digits
+    if (coordinateStr.length > 2) {
+        return coordinateStr.slice(0, 2) + '.' + coordinateStr.slice(2);
+    }
+
+    return coordinateStr; // Return unchanged if too short
+}
+
 async function getSuggestions() {
     const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
     await $.ajax({
@@ -50,10 +84,12 @@ async function getSuggestions() {
         success: function (response) {
             suggestions = response;
             console.log(suggestions);
-            const suggestionsList =$('#suggestions');
+            const suggestionsList = $('#suggestions');
             suggestionsList.empty();
             suggestions.suggestions.forEach(suggestion => {
-                const option = $('<option>').val(suggestion.value);
+                const option = $('<option>').val(suggestion.value)
+                                           .attr('data-lat', suggestion.ycoord)
+                                           .attr('data-lon', suggestion.xcoord); // Store latitude and longitude
                 suggestionsList.append(option);
             });
         },

@@ -16,7 +16,7 @@ $(document).ready(function () {
     initEventListeners();
     initMap();
     $(
-      "#map-settings, #stop-info, #stop-info-oebbm, #stop-info-settings"
+      "#settings, #stop-info, #stop-info-oebb, #stop-info-settings, #journeysInfo"
     ).draggable({ containment: "window" });
     if (settings.latitude && settings.longitude) {
       setLocation(settings.latitude, settings.longitude);
@@ -56,6 +56,7 @@ $(document).ready(function () {
 });
 
 function setLocation(latitude, longitude) {
+  // Send the coordinates to the server
   $.ajax({
     type: "POST",
     url: "/location/set",
@@ -71,6 +72,9 @@ function setLocation(latitude, longitude) {
       console.error("Error setting location:", error);
     },
   });
+
+  // Center the map on the specified location
+  map.setView([latitude, longitude], settings.zoom);
 }
 
 async function getSettings() {
@@ -92,8 +96,6 @@ async function getSettings() {
 }
 
 async function initMap() {
-  //await getSettings();
-
   if (map) {
     // if map is already initialized
     map.remove(); // remove the existing map
@@ -114,31 +116,31 @@ async function initMap() {
 }
 
 function initEventListeners() {
-  $(document).keydown(function (event) {
-    if (!isInputFieldActive()) {
-      if (event.key === "s" || event.key === "S") {
-        toggleSettings();
-      } else if (event.key === "i" || event.key === "I") {
-        toggleStopInfo();
-        toggleStopInfoOebb();
-      } else if (event.key === "j" || event.key === "J") {
-        toggleJourneysInfo();
-      }
-    }
-  });
-  settingsEventListeners();
-  $("#stop-info-oebb-input").on("input", function () {
-    getSuggestions();
+  $("#close-stop-info-oebb").click(function () {
+    $("#stop-info-oebb").hide();  // Hide the Stop Info ÖBB section
   });
 
-  $("#get-stop-info").click(function () {
-    getStopInfo();
+  $(".navbar-nav a").click(function () {
+    $("#collapseMenu").collapse('hide');  // Close the menu
   });
-  $("#get-stop-oebb-info").click(function () {
-    getJourneys().then(() => {
-      $("#journeysInfo").draggable({ containment: "window" });
-    });
+
+  $("#close-settings").click(function () {
+    $("#settings").hide();  // Hide the settings section
   });
+  // Add event listeners for burger menu items
+  $("#menu-map-settings").click(function () {
+    toggleSettings();  // Show/hide map settings
+  });
+
+  $("#menu-stop-info-oebb").click(function () {
+    toggleStopInfoOebb();  // Show/hide stop info ÖBB
+  });
+
+  $("#menu-stop-info").click(function () {
+    toggleJourneysInfo();  // Show/hide stop info
+  });
+
+  settingsEventListeners();  // Keep other event listeners for settings
 }
 
 function updateSettings() {
@@ -158,7 +160,6 @@ function updateSettings() {
 }
 
 function toggleSettings() {
-  // $('#map').toggle();
   $("#settings").toggle();
   updateSettings();
 }
@@ -167,17 +168,8 @@ function toggleStopInfoOebb() {
   $("#stop-info-oebb").toggle();
 }
 
-function toggleStopInfo() {
-  $("#stop-info").toggle();
-}
-
 function toggleJourneysInfo() {
   $("#journeysInfo").toggle();
-}
-
-function isInputFieldActive() {
-  // Check if any input field has focus
-  return $("input:focus").length > 0;
 }
 
 function zoomLock(state) {
@@ -234,7 +226,7 @@ function settingsEventListeners() {
     settings.zoomLock = $("#zoom-lock").is(":checked");
     setSettings();
   });
-  $("#map").mousemove(function () {
+    $("#map").mousemove(function () {
     updateSettings();
   });
   $("#latitude").change(function () {

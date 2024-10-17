@@ -1,11 +1,17 @@
+
 var journeys = {
     journey: []
-}
+};
 
 var suggestions = {
     suggestions: []
-}
+};
 
+// Default station evaId and name (adjust the values as needed)
+const defaultStationId = 1392068;  // Replace with your desired default station's evaId
+const defaultStationName = "Wien Höchstädtplatz";  // Replace with your desired default station's name
+
+// Debounce function to limit how often API requests are made
 function debounce(func, wait) {
     let timeout;
 
@@ -18,61 +24,9 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
-};
-
-async function getJourneys() {
-    const stationInput = document.getElementById('stop-info-oebb-input');
-    const station = stationInput.value || 'Wien'; // Get the station name
-
-    await $.ajax({
-        url: '/journeys',
-        type: 'GET',
-        data: {
-            stationName: station
-        },
-        success: function (response) {
-            // Extract station details and journeys
-            const stationDetails = response.station;
-            const journeys = response.journeys;
-            console.log(journeys);
-
-            if (stationDetails) {
-                const latitude = stationDetails.latitude;
-                const longitude = stationDetails.longitude;
-
-                if (latitude && longitude) {
-                    // Convert to float before using
-                    const latitudeFloat = parseFloat(insertDotAfterFirstTwoDigits(latitude));
-                    const longitudeFloat = parseFloat(insertDotAfterFirstTwoDigits(longitude));
-
-                    setLocation(latitudeFloat, longitudeFloat);
-
-                    // Drop a pin with the station name
-                    dropPin(latitudeFloat, longitudeFloat, station); // Pass station name here
-                }
-            }
-
-            // Render the journeys table
-            renderJourneysTable(journeys);
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
 }
 
-// Helper function to insert a dot after the first two digits
-function insertDotAfterFirstTwoDigits(coordinate) {
-    const coordinateStr = coordinate.toString();
-
-    // Insert dot after the first two digits
-    if (coordinateStr.length > 2) {
-        return coordinateStr.slice(0, 2) + '.' + coordinateStr.slice(2);
-    }
-
-    return coordinateStr; // Return unchanged if too short
-}
-
+// Fetch station suggestions based on user input
 async function getSuggestions() {
     const station = document.getElementById('stop-info-oebb-input').value || 'Wien';
     await $.ajax({
@@ -87,7 +41,10 @@ async function getSuggestions() {
             const suggestionsList = $('#suggestions');
             suggestionsList.empty();
             suggestions.suggestions.forEach(suggestion => {
-                const option = $('<option>').val(suggestion.value);
+                const option = $('<option>')
+                    .val(suggestion.value)
+                    .attr('data-lat', suggestion.ycoord)
+                    .attr('data-lon', suggestion.xcoord);  // Store latitude and longitude
                 suggestionsList.append(option);
             });
         },
@@ -97,84 +54,72 @@ async function getSuggestions() {
     });
 }
 
-// Debounce getSuggestions with a delay of 300ms
-const debouncedGetSuggestions = debounce(getSuggestions, 300);
+async function getJourneys() {
+    const stationInput = document.getElementById('stop-info-oebb-input');
+    const station = stationInput.value || 'Wien'; // Get the station name
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Use the debounced function instead of the original one
-    const stopInfoInput = document.getElementById('stop-info-oebb-input');
-    if(stopInfoInput) {
-        stopInfoInput.addEventListener('input', debouncedGetSuggestions);
-    }
+    // Fetch the station data (ID, latitude, longitude) from the backend
+    await $.ajax({
+        url: '/journeys', // The backend route
+        type: 'GET',
+        data: {
+            stationName: station
+        },
+        success: function (response) {
+            console.log(response);
+            const stationId = response.stationid;
+            const latitude = parseFloat(response.latitude);  // Latitude from the database
+            const longitude = parseFloat(response.longitude);  // Longitude from the database
 
-    // Add event listener to 'Get Arrival Times' button
-    const getArrivalTimesButton = document.getElementById('get-arrival-times-button');
-    if(getArrivalTimesButton) {
-        getArrivalTimesButton.addEventListener('click', getJourneys);
-    }
-});
+            // Update settings with the new location data
+            settings.latitude = latitude;
+            settings.longitude = longitude;
+            settings.zoom = 15;  // Adjust zoom level as needed
 
-async function renderJourneysTable(journeys) {
-    const station = document.getElementById('station');
-    const tableBody = document.getElementById('journeysTableBody');
+            // Set the map location and update the iframe
+            setLocation(settings.latitude, settings.longitude);
+            dropPin(settings.latitude, settings.longitude, station);
+            updateIframe(stationId, station);;
 
-    // Clear the table before rendering
-    tableBody.innerHTML = '';
-    station.innerHTML = '';
+            // Save updated settings
+            setSettings();
 
-    // Check if journeys are empty
-    if (!journeys || journeys.length === 0) {
-        console.error('No journeys available');
-        station.innerHTML = 'No journeys available';
-        return;
-    }
-
-    // Set station name
-    station.innerHTML = journeys[0].stationname;
-
-    journeys.forEach(journey => {
-        // Get the current date and time
-        const currentTime = new Date();
-
-        // Create a journeyTime Date object with the same date as currentTime
-        const journeyTime = new Date(currentTime);
-        const [hours, minutes] = journey.ti.split(':');
-        journeyTime.setHours(hours, minutes);
-
-        // If the journey time is earlier than the current time, skip this iteration
-        if (journeyTime < currentTime) {
-            return;
+            console.log(`Station ID: ${stationId}, Latitude: ${latitude}, Longitude: ${longitude}`);
+        },
+        error: function (error) {
+            console.log(error);
         }
-
-        // Handle the 'rt' field (real-time info) by parsing it as a string
-        let rtDisplay = ' ';
-        let rtClass = ' ';
-        if (typeof journey.rt === 'string' && journey.rt !== 'false') {
-            // Check if the status is "Ausfall"
-            const statusMatch = journey.rt.match(/"status":"Ausfall"/);
-            if (statusMatch) {
-                rtDisplay = 'Ausfall';
-                rtClass = 'delayed';
-            } else {
-                // Use a regex to find the "dlt" value in the rt string if status is not "Ausfall"
-                const dltMatch = journey.rt.match(/"dlt":"([^"]+)"/);
-                if (dltMatch) {
-                    rtDisplay = dltMatch[1]; // Extract the time from the match
-                    rtClass = 'delayed';
-                }
-            }
-        }
-
-        // Create table row
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${journey.ti}</td>
-          <td class="${rtClass}">${rtDisplay}</td>
-          <td>${journey.pr}</td>
-          <td>${journey.laststop}</td>
-          <td>${journey.tr}</td>
-        `;
-        tableBody.appendChild(row);
     });
 }
 
+// Update the iframe with the new station's evaId
+function updateIframe(stationId, stationName) {
+    const iframe = document.getElementById('oebbIframe');
+    const newSrc = `https://fahrplan.oebb.at/bin/stboard.exe/dn?L=vs_liveticker&evaId=${stationId}&boardType=dep&productsFilter=1011111111011&dirInput=&tickerID=dep&start=yes&eqstops=true&showJourneys=12&additionalTime=0`;
+    
+    // Update iframe source with new station's evaId
+    iframe.src = newSrc;
+    
+    // Update station name in the UI
+    const stationNameElement = document.getElementById('station');
+    stationNameElement.textContent = `Station: ${stationName}`;
+}
+
+// Debounced function for fetching station suggestions
+const debouncedGetSuggestions = debounce(getSuggestions, 300);
+
+// Set default station in the iframe on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const stopInfoInput = document.getElementById('stop-info-oebb-input');
+    if (stopInfoInput) {
+        stopInfoInput.addEventListener('input', debouncedGetSuggestions);
+    }
+
+    const getArrivalTimesButton = document.getElementById('get-arrival-times-button');
+    if (getArrivalTimesButton) {
+        getArrivalTimesButton.addEventListener('click', getJourneys);
+    }
+
+    // Set the iframe to the default station's evaId on page load
+    updateIframe(defaultStationId, defaultStationName);
+});

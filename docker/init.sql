@@ -1,22 +1,6 @@
 CREATE DATABASE mmam;
 \c mmam;
 
-CREATE TABLE test (
-    id serial PRIMARY KEY,
-    name varchar(255) NOT NULL,
-    value varchar(255) NOT NULL,
-    DATE date NOT NULL
-);
-
-INSERT INTO test (name, value, DATE) VALUES ('name1', 'value1', '2018-01-01');
-INSERT INTO test (name, value, DATE) VALUES ('name2', 'value2', '2018-01-02');
-INSERT INTO test (name, value, DATE) VALUES ('name3', 'value3', '2018-01-03');
-INSERT INTO test (name, value, DATE) VALUES ('name4', 'value4', '2018-01-04');
-INSERT INTO test (name, value, DATE) VALUES ('name5', 'value5', '2018-01-05');
-INSERT INTO test (name, value, DATE) VALUES ('name6', 'value6', '2018-01-06');
-INSERT INTO test (name, value, DATE) VALUES ('name7', 'value7', '2018-01-07');
-INSERT INTO test (name, value, DATE) VALUES ('name8', 'value8', '2018-01-08');
-
 CREATE TABLE weather (
     id serial PRIMARY KEY,
     timestamp int NOT NULL,
@@ -53,24 +37,12 @@ CREATE TABLE haltepunkte (
     Latitude FLOAT
 );
 
-CREATE TABLE station (
+CREATE TABLE stationoebb (
     id SERIAL PRIMARY KEY,
     stationID varchar(255) NOT NULL,
     stationName varchar(255) NOT NULL,
-    longitude float NOT NULL,
-    latitude float NOT NULL
-);
-
-CREATE TABLE journey (
-    id SERIAL PRIMARY KEY,
-    journeyID varchar(255) NOT NULL,
-    ti varchar(255) NOT NULL,
-    pr varchar(255) NOT NULL,
-    lastStop varchar(255) NOT NULL,
-    tr varchar(255) NOT NULL,
-    rt varchar(255) NOT NULL,
-    stationID varchar(255) NOT NULL
-    
+    longitude FLOAT,          -- Adding longitude column
+    latitude FLOAT            -- Adding latitude column
 );
 
 CREATE TABLE settings (
@@ -80,8 +52,11 @@ CREATE TABLE settings (
     zoom float NOT NULL
 );
 
-ALTER TABLE station ADD CONSTRAINT station_id_unique UNIQUE (stationID);
+-- Add unique constraint on stationID for station table
+ALTER TABLE stationoebb ADD CONSTRAINT station_id_unique UNIQUE (stationID);
+
+-- Add unique constraint for weather table to avoid duplicate weather data
 ALTER TABLE weather ADD CONSTRAINT weather_timestamp_longitude_latitude_unique UNIQUE (timestamp, longitude, latitude);
 
+-- Insert default settings for the map
 INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
-

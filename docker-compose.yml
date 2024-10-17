@@ -20,8 +20,9 @@ services:
     depends_on:
       - database
     volumes:
-            - ./docker/cert.pem:/usr/src/app/certs/cert.pem
-            - ./docker/key.pem:/usr/src/app/certs/key.pem
+      - .:/usr/src/app
+      - ./docker/cert.pem:/usr/src/app/certs/cert.pem
+      - ./docker/key.pem:/usr/src/app/certs/key.pem
     ports:
       - "3313:3313"
     environment:

@@ -18,9 +18,21 @@ router.get('/', async (req, res) => {
     try {
         await clearOldEntries();
         const stationId = await fetchStationId(req.query.stationName);
+        
+        // Fetch station details (including latitude and longitude)
+        const stationDetails = await database.query('SELECT * FROM station WHERE stationID = $1', [stationId]);
+
+        if (stationDetails.rows.length === 0) {
+            return res.status(404).json({ error: 'Station not found' });
+        }
         await fetchJourney(stationId);
         const journeys = await getJourneys(stationId);
-        res.json(journeys);
+
+        // Return both station details and journeys
+        res.json({
+            station: stationDetails.rows[0],
+            journeys: journeys
+        });
     } catch (err) {
         logger.error(err);
         res.status(500).json({ error: 'An error occurred while fetching journeys data' });
@@ -62,8 +74,10 @@ async function fetchSuggestions(stationName) {
         data.suggestions.forEach(async (suggestion) => {
             const stationName = suggestion.value;
             const stationId = suggestion.extId;
+            const longitude = suggestion.xcoord;
+            const latitude = suggestion.ycoord;
             if (!(await stationExists(stationId))) {
-                await insertStation(stationName, stationId);
+                await insertStation(stationName, stationId, longitude, latitude);
             }
         });
         return data;
@@ -73,9 +87,9 @@ async function fetchSuggestions(stationName) {
     }
 }
 
-async function insertStation(stationName, stationId) {
+async function insertStation(stationName, stationId, longitude, latitude) {
     try {
-        return await database.query('INSERT INTO station (stationName, stationID) VALUES ($1, $2)', [stationName, stationId]);
+        return await database.query('INSERT INTO station (stationName, stationID, longitude, latitude) VALUES ($1, $2, $3, $4)', [stationName, stationId, longitude, latitude]);
     }
     catch (error) {
         logger.error(error);

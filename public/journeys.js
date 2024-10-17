@@ -24,26 +24,6 @@ async function getJourneys() {
     const stationInput = document.getElementById('stop-info-oebb-input');
     const station = stationInput.value || 'Wien'; // Get the station name
 
-    // Get selected station’s latitude and longitude
-    const selectedOption = $('#suggestions').find(`option[value="${station}"]`);
-    let latitude = selectedOption.data('lat');
-    let longitude = selectedOption.data('lon');
-
-    // Insert a dot after the first two digits for both latitude and longitude
-    if (latitude && longitude) {
-        latitude = insertDotAfterFirstTwoDigits(latitude);
-        longitude = insertDotAfterFirstTwoDigits(longitude);
-
-        // Convert to float before using
-        const latitudeFloat = parseFloat(latitude);
-        const longitudeFloat = parseFloat(longitude);
-
-        setLocation(latitudeFloat, longitudeFloat);
-
-        // Drop a pin with the station name
-        dropPin(latitudeFloat, longitudeFloat, station); // Pass station name here
-    }
-
     await $.ajax({
         url: '/journeys',
         type: 'GET',
@@ -51,9 +31,29 @@ async function getJourneys() {
             stationName: station
         },
         success: function (response) {
-            journeys = response;
+            // Extract station details and journeys
+            const stationDetails = response.station;
+            const journeys = response.journeys;
             console.log(journeys);
-            renderJourneysTable();
+
+            if (stationDetails) {
+                const latitude = stationDetails.latitude;
+                const longitude = stationDetails.longitude;
+
+                if (latitude && longitude) {
+                    // Convert to float before using
+                    const latitudeFloat = parseFloat(insertDotAfterFirstTwoDigits(latitude));
+                    const longitudeFloat = parseFloat(insertDotAfterFirstTwoDigits(longitude));
+
+                    setLocation(latitudeFloat, longitudeFloat);
+
+                    // Drop a pin with the station name
+                    dropPin(latitudeFloat, longitudeFloat, station); // Pass station name here
+                }
+            }
+
+            // Render the journeys table
+            renderJourneysTable(journeys);
         },
         error: function (error) {
             console.log(error);
@@ -87,9 +87,7 @@ async function getSuggestions() {
             const suggestionsList = $('#suggestions');
             suggestionsList.empty();
             suggestions.suggestions.forEach(suggestion => {
-                const option = $('<option>').val(suggestion.value)
-                                           .attr('data-lat', suggestion.ycoord)
-                                           .attr('data-lon', suggestion.xcoord); // Store latitude and longitude
+                const option = $('<option>').val(suggestion.value);
                 suggestionsList.append(option);
             });
         },
@@ -116,12 +114,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-async function renderJourneysTable() {
+async function renderJourneysTable(journeys) {
     const station = document.getElementById('station');
     const tableBody = document.getElementById('journeysTableBody');
+
+    // Clear the table before rendering
     tableBody.innerHTML = '';
     station.innerHTML = '';
-    station.innerHTML += journeys[0].stationname;
+
+    // Check if journeys are empty
+    if (!journeys || journeys.length === 0) {
+        console.error('No journeys available');
+        station.innerHTML = 'No journeys available';
+        return;
+    }
+
+    // Set station name
+    station.innerHTML = journeys[0].stationname;
 
     journeys.forEach(journey => {
         // Get the current date and time

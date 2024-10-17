@@ -56,7 +56,9 @@ CREATE TABLE haltepunkte (
 CREATE TABLE station (
     id SERIAL PRIMARY KEY,
     stationID varchar(255) NOT NULL,
-    stationName varchar(255) NOT NULL
+    stationName varchar(255) NOT NULL,
+    longitude float NOT NULL,
+    latitude float NOT NULL
 );
 
 CREATE TABLE journey (

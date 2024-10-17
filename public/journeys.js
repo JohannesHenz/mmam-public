@@ -148,16 +148,19 @@ async function renderJourneysTable(journeys) {
 
         // Handle the 'rt' field (real-time info) by parsing it as a string
         let rtDisplay = ' ';
+        let rtClass = ' ';
         if (typeof journey.rt === 'string' && journey.rt !== 'false') {
             // Check if the status is "Ausfall"
             const statusMatch = journey.rt.match(/"status":"Ausfall"/);
             if (statusMatch) {
                 rtDisplay = 'Ausfall';
+                rtClass = 'delayed';
             } else {
                 // Use a regex to find the "dlt" value in the rt string if status is not "Ausfall"
                 const dltMatch = journey.rt.match(/"dlt":"([^"]+)"/);
                 if (dltMatch) {
                     rtDisplay = dltMatch[1]; // Extract the time from the match
+                    rtClass = 'delayed';
                 }
             }
         }
@@ -166,7 +169,7 @@ async function renderJourneysTable(journeys) {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${journey.ti}</td>
-          <td>${rtDisplay}</td>
+          <td class="${rtClass}">${rtDisplay}</td>
           <td>${journey.pr}</td>
           <td>${journey.laststop}</td>
           <td>${journey.tr}</td>

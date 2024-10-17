@@ -66,6 +66,7 @@ CREATE TABLE journey (
     pr varchar(255) NOT NULL,
     lastStop varchar(255) NOT NULL,
     tr varchar(255) NOT NULL,
+    rt varchar(255) NOT NULL,
     stationID varchar(255) NOT NULL
     
 );

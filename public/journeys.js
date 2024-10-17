@@ -122,9 +122,9 @@ async function renderJourneysTable() {
     tableBody.innerHTML = '';
     station.innerHTML = '';
     station.innerHTML += journeys[0].stationname;
-    
+
     journeys.forEach(journey => {
-    // Get the current date and time
+        // Get the current date and time
         const currentTime = new Date();
 
         // Create a journeyTime Date object with the same date as currentTime
@@ -137,13 +137,32 @@ async function renderJourneysTable() {
             return;
         }
 
+        // Handle the 'rt' field (real-time info) by parsing it as a string
+        let rtDisplay = ' ';
+        if (typeof journey.rt === 'string' && journey.rt !== 'false') {
+            // Check if the status is "Ausfall"
+            const statusMatch = journey.rt.match(/"status":"Ausfall"/);
+            if (statusMatch) {
+                rtDisplay = 'Ausfall';
+            } else {
+                // Use a regex to find the "dlt" value in the rt string if status is not "Ausfall"
+                const dltMatch = journey.rt.match(/"dlt":"([^"]+)"/);
+                if (dltMatch) {
+                    rtDisplay = dltMatch[1]; // Extract the time from the match
+                }
+            }
+        }
+
+        // Create table row
         const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${journey.ti}</td>
-        <td>${journey.pr}</td>
-        <td>${journey.laststop}</td>
-        <td>${journey.tr}</td>
-      `;
-      tableBody.appendChild(row);
+        row.innerHTML = `
+          <td>${journey.ti}</td>
+          <td>${rtDisplay}</td>
+          <td>${journey.pr}</td>
+          <td>${journey.laststop}</td>
+          <td>${journey.tr}</td>
+        `;
+        tableBody.appendChild(row);
     });
-  }
+}
+

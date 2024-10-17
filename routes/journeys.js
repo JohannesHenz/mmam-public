@@ -95,11 +95,11 @@ async function stationExists(stationId) {
     }
 }
 
-async function insertJourney(journeyId, pr, ti, tr, lastStop, stationId) {
+async function insertJourney(journeyId, pr, ti, tr, rt, lastStop, stationId) {
     try {
         const data = await database.query('SELECT * FROM journey WHERE journeyID = $1', [journeyId]);
         if (data.rows.length === 0) {
-            return await database.query('INSERT INTO journey (journeyID, pr, ti, tr, lastStop, stationID) VALUES ($1, $2, $3, $4, $5, $6)', [journeyId, pr, ti, tr, lastStop, stationId]);
+            return await database.query('INSERT INTO journey (journeyID, pr, ti, tr, rt, lastStop, stationID) VALUES ($1, $2, $3, $4, $5, $6, $7)', [journeyId, pr, ti, tr, rt, lastStop, stationId]);
         }
     }
     catch (error) {
@@ -145,8 +145,9 @@ async function fetchJourney(stationId) {
             const pr = journey.pr;
             const ti = journey.ti;
             const tr = journey.tr;
+            const rt = journey.rt;
             const lastStop = journey.lastStop;
-            await insertJourney(journeyId, pr, ti, tr, lastStop, stationId);
+            await insertJourney(journeyId, pr, ti, tr, rt, lastStop, stationId);
         }));
     } catch (error) {
         logger.error(error);

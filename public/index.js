@@ -143,6 +143,10 @@ function initEventListeners() {
   settingsEventListeners();  // Keep other event listeners for settings
 }
 
+$(document).ready(function() {
+    $("#menu-disruptions").click(toggleDisruptions);
+  });
+
 function updateSettings() {
   $("#latitude").val(map.getCenter().lat);
   $("#longitude").val(map.getCenter().lng);
@@ -171,6 +175,13 @@ function toggleStopInfoOebb() {
 function toggleJourneysInfo() {
   $("#journeysInfo").toggle();
 }
+
+// Add this after the existing toggle functions
+function toggleDisruptions() {
+    $("#disruptions").toggle();
+  }
+  
+
 
 function zoomLock(state) {
   if (state) {

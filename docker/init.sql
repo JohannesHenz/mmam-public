@@ -60,3 +60,11 @@ ALTER TABLE weather ADD CONSTRAINT weather_timestamp_longitude_latitude_unique U
 
 -- Insert default settings for the map
 INSERT INTO settings (latitude, longitude, zoom) VALUES (48.23944, 16.37725, 16);
+
+/*
+-- Enable the pg_trgm extension for text similarity matching
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- Create index for faster similarity searches on haltepunkte table
+CREATE INDEX IF NOT EXISTS idx_haltepunkte_name_trgm ON haltepunkte USING gin ("StopText" gin_trgm_ops);
+*/

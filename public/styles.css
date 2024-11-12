@@ -213,3 +213,33 @@ table {
 .navbar-toggler-icon {
   background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"%3E%3Cpath stroke="rgba(0, 0, 0, 1)" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/%3E%3C/svg%3E') !important;
 }
+
+#disruptions {
+    position: absolute;
+    top: 515px;
+    right: 10px;
+    z-index: 1000;
+    width: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.elevator-disruption {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.regular-disruption {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+#disruptions .list-group-item {
+    border-left: 4px solid;
+}
+
+.elevator-disruption {
+    border-left-color: #ffc107 !important;
+}
+
+.regular-disruption {
+    border-left-color: #dc3545 !important;
+}

@@ -23,6 +23,7 @@ services:
       - database
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules
       - ./docker/cert.pem:/usr/src/app/certs/cert.pem
       - ./docker/key.pem:/usr/src/app/certs/key.pem
     ports:

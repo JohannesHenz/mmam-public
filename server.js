@@ -1,42 +1,46 @@
-require('dotenv').config();
-const fs = require('fs');
-const https = require('https');
-const express = require('express');
-const logger = require('./utils/logger');
-const favicon = require('serve-favicon');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const path = require('path');
-const routes = require('./routes');
+require("dotenv").config();
+const fs = require("fs");
+const https = require("https");
+const express = require("express");
+const logger = require("./utils/logger");
+const favicon = require("serve-favicon");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const path = require("path");
+const routes = require("./routes");
+//const stopInfoRouter = require('./routes/stop-info');
 
 const port = 3313;
 
 const server = express();
-server.set('view engine', 'ejs');
+server.set("view engine", "ejs");
+server.use("/disruptions", require("./routes/disruptions"));
 server.use(bodyParser.json());
 server.use(cors());
-server.use(express.static(path.join(__dirname, 'public')));
-server.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+server.use(express.static(path.join(__dirname, "public")));
+server.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
 server.use((request, response, next) => {
-    console.log(`Request: ${request.method} ${request.url}`);
-    next();
+  console.log(`Request: ${request.method} ${request.url}`);
+  next();
 });
 
-server.use('/location', require('./routes/location'));
+server.use("/location", require("./routes/location"));
 
 // Include other routes
-server.use('/weather', require('./routes/weather'));
+server.use("/weather", require("./routes/weather"));
+
+server.use("/stop-info", require("./routes/stop-info"));
 
 routes(server);
 
 // Load SSL certificate and key
 const options = {
-  key: fs.readFileSync('/usr/src/app/certs/key.pem'),
-  cert: fs.readFileSync('/usr/src/app/certs/cert.pem')
+  key: fs.readFileSync("/usr/src/app/certs/key.pem"),
+  cert: fs.readFileSync("/usr/src/app/certs/cert.pem"),
 };
 
 // Create HTTPS server
 https.createServer(options, server).listen(port, () => {
-    logger.success(`Listening: https://localhost:${port}`);
+  logger.success(`Listening: https://localhost:${port}`);
 });

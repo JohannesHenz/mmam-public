@@ -10,7 +10,8 @@ WORKDIR /usr/src/app
 
 # Install app dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --production=false
+RUN npm install -g nodemon
 
 # Bundle app source
 COPY . .
@@ -23,4 +24,4 @@ COPY ./docker/key.pem /usr/src/app/certs/key.pem
 EXPOSE 3313
 
 # Default command depending on NODE_ENV
-CMD if [ "$NODE_ENV" = "development" ]; then npm run dev; else node server.js; fi
+CMD if [ "$NODE_ENV" = "development" ]; then npm run dev; else npm start; fi

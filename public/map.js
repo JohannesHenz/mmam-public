@@ -55,15 +55,3 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 map.removeControl(map.zoomControl);
-
-function dropPin(latitude, longitude, stationName) {
-    // Remove previous marker if it exists
-    if (map.pinMarker) {
-        map.removeLayer(map.pinMarker);
-    }
-
-    // Create a new marker at the specified coordinates with a dynamic popup
-    map.pinMarker = L.marker([latitude, longitude]).addTo(map)
-        .bindPopup(`Station: ${stationName}`) // Dynamic station name
-        .openPopup();
-}

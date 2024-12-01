@@ -40,7 +40,7 @@ async function fetchStationData(stationName) {
 
 async function fetchSuggestions(stationName) {
     stationName = stationName || 'Wien';
-    const url = `http://fahrplan.oebb.at/bin/ajax-getstop.exe/dn?REQ0JourneyStopsS0A=&REQ0JourneyStopsB=12&S=${stationName}?&js=true&=`;
+    const url = `http://fahrplan.oebb.at/bin/ajax-getstop.exe/dn?REQ0JourneyStopsS0A=&REQ0JourneyStopsB=500&S=${stationName}?&js=true&=`;
     try {
         const response = await axios.get(url, { responseType: 'arraybuffer' });
         let data = iconv.decode(Buffer.from(response.data), 'ISO-8859-1');

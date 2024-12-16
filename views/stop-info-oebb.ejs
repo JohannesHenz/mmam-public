@@ -1,22 +1,50 @@
 <div id="stop-info-oebb" style="display: none">
-    <div class="card shadow-lg" id="stop-info-oebb-settings">
-        <!-- Card Header with Close Button -->
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mt-1">Stop Info ÖBB</h5>
-            <!-- Close Button (X) -->
-            <button type="button" class="btn-close" id="close-stop-info-oebb" aria-label="Close"></button>
-        </div>
-        <div class="card-body form-group">
-            <form>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="stop-id-span">Stop Name ÖBB</span>
-                    <input type="text" class="form-control" aria-describedby="stop-id-span" placeholder="Enter stop name" id="stop-info-oebb-input" list="suggestions">
-                    <datalist id="suggestions"></datalist>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-primary" type="button" id="get-arrival-times-button">Get Arrival Times</button>
-                </div>
-            </form>
-        </div>
+  <div class="card shadow-lg" id="stop-info-oebb-settings">
+    <!-- Card Header with Close Button -->
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mt-1">Stop Info ÖBB</h5>
+      <!-- Close Button (X) -->
+      <button
+        type="button"
+        class="btn-close"
+        id="close-stop-info-oebb"
+        aria-label="Close"
+      ></button>
     </div>
+    <div class="card-body form-group">
+      <form>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="stop-id-span">Stop Name</span>
+          <input
+            type="text"
+            class="form-control"
+            aria-describedby="stop-id-span"
+            placeholder="Enter stop name"
+            id="stop-info-oebb-input"
+            list="suggestions"
+          />
+          <datalist id="suggestions"></datalist>
+        </div>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="data-type-select"
+            >Datenquelle</label
+          >
+          <select class="form-select" id="data-type-select">
+            <option value="oebb">ÖBB</option>
+            <option value="wienerlinien">Wiener Linien</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button
+            class="btn btn-primary"
+            type="button"
+            id="get-arrival-times-button"
+          >
+            Get Arrival Times
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

@@ -35,37 +35,40 @@ async function fetchWienerLinienData(StopID) {
 }
 
 async function fetchWienerLinienDataForDisruptions(StopID) {
-    if (!StopID) {
-      console.error("No StopID provided");
-      return [];
-    }
-  
-    try {
-      console.log("Fetching data for StopID:", StopID);
-      const url = `https://www.wienerlinien.at/ogd_realtime/monitor?stopId=${StopID}&activeTrafficInfo=stoerungkurz`;
-      console.log("WL API URL:", url);
-  
-      const response = await axios(url);
-      console.log("Wiener Linien API response:", response.data);
-  
-      if (!response.data || !response.data.data || !response.data.data.monitors) {
-        console.error("Invalid response structure:", response.data);
-        return [];
-      }
-  
-      return response.data.data.monitors;
-    } catch (error) {
-      console.error("Error in fetchWienerLinienData:", error);
-      return [];
-    }
+  if (!StopID) {
+    console.error("No StopID provided");
+    return [];
   }
+
+  try {
+    console.log("Fetching data for StopID:", StopID);
+    const url = `https://www.wienerlinien.at/ogd_realtime/monitor?stopId=${StopID}&activeTrafficInfo=stoerungkurz`;
+    console.log("WL API URL:", url);
+
+    const response = await axios(url);
+    console.log("Wiener Linien API response:", response.data);
+
+    if (!response.data || !response.data.data || !response.data.data.monitors) {
+      console.error("Invalid response structure:", response.data);
+      return [];
+    }
+
+    return response.data.data.monitors;
+  } catch (error) {
+    console.error("Error in fetchWienerLinienData:", error);
+    return [];
+  }
+}
 
 router.post("/", async (request, response) => {
   console.log("POST request to /wienerlinien/stop-info received");
   console.log("Request Body:", request.body); // Log the entire request body
 
   const stopName = request.body.stopName;
+  const dataType = request.body.dataType; // New field for data type
+
   console.log("Received stopName:", stopName);
+  console.log("Received dataType:", dataType);
 
   // Look up the stopId based on the stopName
   const StopID = await getStopId(stopName);
@@ -77,10 +80,17 @@ router.post("/", async (request, response) => {
   }
 
   try {
-    // Fetch data using the obtained stopId
-    const wienerLinienResponse = await fetchWienerLinienData(StopID);
-    console.log("Wiener Linien response:", wienerLinienResponse);
-
+    let responseData = [];
+    if (dataType === "oebb" || dataType === "both") {
+      // Fetch ÖBB data
+      const oebbData = await fetchOebbData(StopID);
+      responseData = responseData.concat(oebbData);
+    }
+    if (dataType === "wienerlinien" || dataType === "both") {
+      // Fetch Wiener Linien data
+      const wienerLinienData = await fetchWienerLinienData(StopID);
+      responseData = responseData.concat(wienerLinienData);
+    }
     // Send the Wiener Linien data back to the frontend
     response.json(wienerLinienResponse);
   } catch (error) {
@@ -330,8 +340,6 @@ checkDatabaseConnectionPeriodically();
 populateDatabase();
 
 router.get("/connected-lines/:stopName", async (req, res) => {
-  console.log("Incoming request:", req);
-  console.log("Request Params:", req.params);
   const oebbStopName = req.params.stopName; // Ensure this is defined outside the try block
   try {
     console.log("1. Received ÖBB station name:", oebbStopName);

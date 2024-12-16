@@ -243,3 +243,45 @@ table {
 .regular-disruption {
     border-left-color: #dc3545 !important;
 }
+
+#wienerlinienInfo {
+    position: absolute;
+    top: 100px;
+    right: 0px;
+    z-index: 500;
+    max-width: 800px;
+    display: none;
+}
+
+#wienerlinienCard {
+    background-color: #001f3f; /* Match ÖBB window color */
+    color: white;
+}
+
+#wienerlinien-data {
+    color: white;
+}
+
+#wienerlinien-data table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#wienerlinien-data th,
+#wienerlinien-data td {
+    padding: 10px;
+    text-align: left;
+}
+
+#wienerlinien-data th {
+    color: white;
+}
+
+#wienerlinien-data tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#wienerlinien-data tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+}

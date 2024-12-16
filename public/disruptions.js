@@ -141,14 +141,14 @@ async function getConnectedLines(stationName) {
   }
 
   try {
-    console.log("1. Fetching connected lines for station:", stationName);
+    //console.log("1. Fetching connected lines for station:", stationName);
     const encodedURIComponent = encodeURIComponent(stationName);
-    console.log("1b. Encoded station name:", encodedURIComponent);
+   // console.log("1b. Encoded station name:", encodedURIComponent);
     const url = 'https://localhost:3313/stop-info/connected-lines/' + encodedURIComponent;
-    console.log("2. Request URL:", url);
+    //console.log("2. Request URL:", url);
 
     const response = await fetch(url);
-    console.log("3. Response status:", response.status);
+   // console.log("3. Response status:", response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -157,7 +157,7 @@ async function getConnectedLines(stationName) {
     }
 
     const lines = await response.json();
-    console.log("4b. Received lines:", lines);
+   // console.log("4b. Received lines:", lines);
     return lines;
   } catch (error) {
     console.error("Error in getConnectedLines:", error);

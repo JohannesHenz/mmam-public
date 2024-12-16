@@ -16,7 +16,7 @@ $(document).ready(function () {
     initEventListeners();
     initMap();
     $(
-      "#settings, #stop-info, #stop-info-oebb, #stop-info-settings, #journeysInfo"
+      "#settings, #stop-info, #stop-info-oebb, #stop-info-settings, #journeysInfo, #wienerlinieninfo, #disruptions"
     ).draggable({ containment: "window" });
     if (settings.latitude && settings.longitude) {
       setLocation(settings.latitude, settings.longitude);
@@ -117,35 +117,35 @@ async function initMap() {
 
 function initEventListeners() {
   $("#close-stop-info-oebb").click(function () {
-    $("#stop-info-oebb").hide();  // Hide the Stop Info ÖBB section
+    $("#stop-info-oebb").hide(); // Hide the Stop Info ÖBB section
   });
 
   $(".navbar-nav a").click(function () {
-    $("#collapseMenu").collapse('hide');  // Close the menu
+    $("#collapseMenu").collapse("hide"); // Close the menu
   });
 
   $("#close-settings").click(function () {
-    $("#settings").hide();  // Hide the settings section
+    $("#settings").hide(); // Hide the settings section
   });
   // Add event listeners for burger menu items
   $("#menu-map-settings").click(function () {
-    toggleSettings();  // Show/hide map settings
+    toggleSettings(); // Show/hide map settings
   });
 
   $("#menu-stop-info-oebb").click(function () {
-    toggleStopInfoOebb();  // Show/hide stop info ÖBB
+    toggleStopInfoOebb(); // Show/hide stop info ÖBB
   });
 
   $("#menu-stop-info").click(function () {
-    toggleJourneysInfo();  // Show/hide stop info
+    toggleJourneysInfo(); // Show/hide stop info
   });
 
-  settingsEventListeners();  // Keep other event listeners for settings
+  settingsEventListeners(); // Keep other event listeners for settings
 }
 
-$(document).ready(function() {
-    $("#menu-disruptions").click(toggleDisruptions);
-  });
+$(document).ready(function () {
+  $("#menu-disruptions").click(toggleDisruptions);
+});
 
 function updateSettings() {
   $("#latitude").val(map.getCenter().lat);
@@ -178,10 +178,20 @@ function toggleJourneysInfo() {
 
 // Add this after the existing toggle functions
 function toggleDisruptions() {
-    $("#disruptions").toggle();
-  }
-  
+  $("#disruptions").toggle();
+}
 
+$(document).ready(function() {
+    const wienerlinienWindow = $("#wienerlinienInfo");
+    wienerlinienWindow.draggable({
+      handle: ".card-header"
+    });
+  
+    const toggleWienerlinienButton = $("#toggle-wienerlinien-window");
+    toggleWienerlinienButton.click(function() {
+      wienerlinienWindow.toggle();
+    });
+  });
 
 function zoomLock(state) {
   if (state) {
@@ -237,7 +247,7 @@ function settingsEventListeners() {
     settings.zoomLock = $("#zoom-lock").is(":checked");
     setSettings();
   });
-    $("#map").mousemove(function () {
+  $("#map").mousemove(function () {
     updateSettings();
   });
   $("#latitude").change(function () {
@@ -288,3 +298,18 @@ function setSettings() {
     },
   });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleWienerlinienButton = document.getElementById(
+    "toggle-wienerlinien-window"
+  );
+  const wienerlinienWindow = document.getElementById("wienerlinienInfo");
+
+  toggleWienerlinienButton.addEventListener("click", function () {
+    if (wienerlinienWindow.style.display === "none") {
+      wienerlinienWindow.style.display = "block";
+    } else {
+      wienerlinienWindow.style.display = "none";
+    }
+  });
+});

@@ -8,9 +8,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const routes = require("./routes");
-//const stopInfoRouter = require('./routes/stop-info');
 
-const port = 3313;
+const port = 443; // Changed from 3313 to 443
 
 const server = express();
 server.set("view engine", "ejs");
@@ -26,10 +25,7 @@ server.use((request, response, next) => {
 });
 
 server.use("/location", require("./routes/location"));
-
-// Include other routes
 server.use("/weather", require("./routes/weather"));
-
 server.use("/stop-info", require("./routes/stop-info"));
 
 routes(server);
@@ -40,7 +36,7 @@ const options = {
   cert: fs.readFileSync("/usr/src/app/certs/cert.pem"),
 };
 
-// Create HTTPS server
+// Create HTTPS server on port 443
 https.createServer(options, server).listen(port, () => {
   logger.success(`Listening: https://localhost:${port}`);
 });

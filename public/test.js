@@ -12,7 +12,7 @@ function main() {
 
 function testCall(retries) {
   $.ajax({
-    url: "https://localhost:3313/test",
+    url: "https://localhost:443/test",
     type: "GET",
     dataType: "json",
     success: function (data, status, xhr) {
@@ -26,7 +26,7 @@ function testCall(retries) {
         }, AJAX_RETRY_DELAY);
       } else {
         console.log(
-          `failed to GET http://localhost:3313/test in ${AJAX_RETRY_COUNT} tries`
+          `failed to GET http://localhost:443/test in ${AJAX_RETRY_COUNT} tries`
         );
         renderTest([]);
       }

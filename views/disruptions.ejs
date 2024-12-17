@@ -1,27 +1,71 @@
 <div id="disruptions" class="card shadow-lg">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mt-1">Störungen</h5>
-        <button type="button" class="btn-close" id="close-disruptions" aria-label="Close"></button>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mt-1">Störungen</h5>
+    <button
+      type="button"
+      class="btn-close"
+      id="close-disruptions"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="card-body">
+    <ul class="nav nav-tabs" id="disruption-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="alle-tab"
+          data-category="alle"
+          data-bs-toggle="tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+        >
+          Alle
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="stoerungkurz-tab"
+          data-category="stoerungkurz"
+          data-bs-toggle="tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+        >
+          Kurze Störungen
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="stoerunglang-tab"
+          data-category="stoerunglang"
+          data-bs-toggle="tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+        >
+          Lange Störungen
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="aufzugsinfo-tab"
+          data-category="aufzugsinfo"
+          data-bs-toggle="tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+        >
+          Aufzugstörungen
+        </button>
+      </li>
+    </ul>
+
+    <div id="disruptions-list" class="list-group mt-3">
+      <!-- Will be populated dynamically -->
     </div>
-    <div class="card-body">
-        <div class="filters mb-3">
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="show-disruptions" checked>
-                <label class="form-check-label" for="show-disruptions">Störungen anzeigen</label>
-            </div>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="show-elevator" checked>
-                <label class="form-check-label" for="show-elevator">Aufzugsstörungen anzeigen</label>
-            </div>
-            <select class="form-select mt-2" id="line-filter" multiple>
-                <!-- Will be populated dynamically -->
-            </select>
-            <select class="form-select mt-2" id="station-filter" multiple>
-                <!-- Will be populated dynamically -->
-            </select>
-        </div>
-        <div id="disruptions-list" class="list-group">
-            <!-- Will be populated dynamically -->
-        </div>
-    </div>
+  </div>
 </div>

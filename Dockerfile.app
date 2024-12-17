@@ -20,8 +20,8 @@ COPY . .
 COPY ./docker/cert.pem /usr/src/app/certs/cert.pem
 COPY ./docker/key.pem /usr/src/app/certs/key.pem
 
-# Expose port 3313
-EXPOSE 3313
+# Expose port 443 for HTTPS
+EXPOSE 443
 
 # Default command depending on NODE_ENV
 CMD if [ "$NODE_ENV" = "development" ]; then npm run dev; else npm start; fi

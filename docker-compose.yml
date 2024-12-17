@@ -27,7 +27,7 @@ services:
       - ./docker/cert.pem:/usr/src/app/certs/cert.pem
       - ./docker/key.pem:/usr/src/app/certs/key.pem
     ports:
-      - "3313:3313"
+      - "443:443"
     environment:
       NODE_ENV: development  # Set environment to development for hot-reloading replace with production if not in development
       DATABASE_URL: postgres://postgres:postgres@database:5432/postgres

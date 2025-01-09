@@ -285,3 +285,18 @@ table {
     background-color: rgba(0, 0, 0, 0.7);
     cursor: pointer;
 }
+/*
+#stop-info-oebb-settings {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+*/
+#wienerlinienCard {
+  position: absolute;
+  top: 415px;
+  right: 10px;
+  z-index: 1000;
+  width: 400px;
+}

@@ -172,9 +172,9 @@ async function getConnectedLines(stationName) {
   }
 
   try {
-    const encodedURIComponent = encodeURIComponent(stationName);
-    const url =
-      "https://localhost:443/stop-info/connected-lines/" + encodedURIComponent;
+    console.log("Fetching connected lines for:", stationName);
+    const encodedStationName = encodeURIComponent(stationName);
+    const url = `/stop-info/connected-lines/${encodedStationName}`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -184,12 +184,16 @@ async function getConnectedLines(stationName) {
     }
 
     const lines = await response.json();
+    console.log("Connected lines found:", lines);
     return lines;
   } catch (error) {
     console.error("Error in getConnectedLines:", error);
     return [];
   }
 }
+
+// Make sure this function is available globally
+window.getConnectedLines = getConnectedLines;
 
 $(document).ready(function () {
   $("#stop-info-oebb-input").on("change", function () {

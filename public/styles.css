@@ -22,9 +22,9 @@ body {
 }
 
 table {
-  font-family: "Lucida Console", Monaco, monospace;
+  /*font-family: "Lucida Console", Monaco, monospace; */
   border-collapse: separate;
-  border-spacing: 15px;
+  border-spacing: 0; /* or a small number, if you want spacing */
 }
 
 #settings {
@@ -255,8 +255,22 @@ table {
 }
 
 #wienerlinienCard {
-    background-color: #001f3f; /* Match ÖBB window color */
-    color: white;
+    /* background-color: #001f3f; */
+    /* color: white; 
+    position: absolute;
+    top: 415px;
+    right: 10px;
+    z-index: 1000;
+    width: 400px;
+    */
+    background-color: #2f2f2f; 
+    color: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#wienerlinienCard .card-header {
+    background-color: #1d1d1d;
+    color: #fff;
 }
 
 #wienerlinien-data {
@@ -264,8 +278,10 @@ table {
 }
 
 #wienerlinien-data table {
+    /*
     width: 100%;
     border-collapse: collapse;
+    */
 }
 
 #wienerlinien-data th,
@@ -279,12 +295,14 @@ table {
 }
 
 #wienerlinien-data tbody tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.5);
+   /*background-color: rgba(0, 0, 0, 0.5); */
 }
 
 #wienerlinien-data tbody tr:hover {
+    /*
     background-color: rgba(0, 0, 0, 0.7);
     cursor: pointer;
+    */
 }
 /*
 #stop-info-oebb-settings {
@@ -313,11 +331,11 @@ table {
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 123, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 123, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.07);
 }
 
 .card {

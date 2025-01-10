@@ -333,7 +333,7 @@ $(document).ready(function () {
     const stopName = $("#stop-info-oebb-input").val();
     const dataType = $("#data-type-select").val();
 
-    console.log("Get Arrival Times clicked for:", { stopName, dataType });
+    //console.log("Get Arrival Times clicked for:", { stopName, dataType });
 
     if (!stopName) {
       console.error("No stop name provided");
@@ -344,20 +344,20 @@ $(document).ready(function () {
     try {
       // First get the connected lines to find the Wiener Linien stop ID
       const connectedLines = await getConnectedLines(stopName);
-      console.log("Connected lines response:", connectedLines);
+      //console.log("Connected lines response:", connectedLines);
 
       if (dataType === "wienerlinien" || dataType === "both") {
         // Get Wiener Linien departures
-        console.log(
-          "(Index.js)Getting Wiener Linien departures for:",
-          stopName
-        );
+        //console.log(
+        //  "(Index.js)Getting Wiener Linien departures for:",
+        //  stopName
+        //);
         const response = await $.ajax({
           url: `/stop-info/wienerlinien/${encodeURIComponent(stopName)}`,
           method: "GET",
         });
 
-        console.log("Wiener Linien response:", response);
+        //console.log("Wiener Linien response:", response);
         displayWienerLinienInfo(response);
       }
     } catch (error) {

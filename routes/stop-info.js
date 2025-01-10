@@ -16,28 +16,28 @@ async function fetchWienerLinienData(StopID) {
   }
 
   try {
-    console.log("Fetching data for StopID:", StopID);
+    //console.log("Fetching data for StopID:", StopID);
     const url = `https://www.wienerlinien.at/ogd_realtime/monitor?stopId=${StopID}`;
-    console.log("WL API URL:", url);
+    //console.log("WL API URL:", url);
 
     const response = await axios(url);
-    console.log("Wiener Linien API response:", response.data);
+    //console.log("Wiener Linien API response:", response.data);
 
     if (!response.data || !response.data.data || !response.data.data.monitors) {
-      console.error("Invalid response structure:", response.data);
+      //console.error("Invalid response structure:", response.data);
       return [];
     }
 
     return response.data.data.monitors;
   } catch (error) {
-    console.error("Error in fetchWienerLinienData:", error);
+    //console.error("Error in fetchWienerLinienData:", error);
     return [];
   }
 }
 
 async function fetchWienerLinienDataForDisruptions(StopID) {
   if (!StopID) {
-    console.error("No StopID provided");
+    //console.error("No StopID provided");
     return [];
   }
 
@@ -56,7 +56,7 @@ async function fetchWienerLinienDataForDisruptions(StopID) {
 
     return response.data.data.monitors;
   } catch (error) {
-    console.error("Error in fetchWienerLinienData:", error);
+    //console.error("Error in fetchWienerLinienData:", error);
     return [];
   }
 }
@@ -448,7 +448,6 @@ router.get("/connected-lines/:stopName", async (req, res) => {
   }
 });
 
-
 /*
 async function getWienerLinienStopId(stopName) {
   try {
@@ -464,9 +463,9 @@ async function getWienerLinienStopId(stopName) {
 
 async function getConnectedLinesFromAPI(stopId) {
   try {
-    console.log("Fetching lines for stopId:", stopId);
+    //console.log("Fetching lines for stopId:", stopId);
     const response = await fetchWienerLinienDataForDisruptions(stopId);
-    console.log("WL API response (getConnectedLinesFromAPI):", response);
+    //console.log("WL API response (getConnectedLinesFromAPI):", response);
 
     const lines = new Set();
 
@@ -483,68 +482,25 @@ async function getConnectedLinesFromAPI(stopId) {
     }
 
     const result = Array.from(lines);
-    console.log("Extracted lines (getConnectedLinesFromAPI):", result);
+    //console.log("Extracted lines (getConnectedLinesFromAPI):", result);
     return result;
   } catch (error) {
-    console.error("Error getting connected lines:", error);
+    //console.error("Error getting connected lines:", error);
     return [];
   }
 }
 
-/*
-async function mapOebbToWienerLinien(oebbStopName) {
-  try {
-    // First get the coordinates from the ÖBB station
-    const oebbQuery =
-      "SELECT latitude, longitude FROM stationoebb WHERE stationname ILIKE $1 OR stationname ILIKE $2 OR stationname ILIKE $3 OR stationname ILIKE $4";
-    const oebbResult = await database.query(oebbQuery, [
-      oebbStopName,
-      oebbStopName.replace(" (U)", ""),
-      oebbStopName.replace("Bahnhst", "Bahnhof"),
-      oebbStopName.replace(" (U)", "").replace("Bahnhst", "Bahnhof"),
-    ]);
-
-    if (oebbResult.rows.length === 0) {
-      return null;
-    }
-
-    const { latitude, longitude } = oebbResult.rows[0];
-
-    // Find the closest Wiener Linien station by coordinates
-    const wlQuery = `
-            SELECT stoptext, stopid,
-                   point($1, $2) <-> point(latitude, longitude) as distance
-            FROM haltepunkte
-            WHERE point($1, $2) <-> point(latitude, longitude) < 0.01
-            ORDER BY distance ASC
-            LIMIT 1
-        `;
-
-    const wlResult = await database.query(wlQuery, [latitude, longitude]);
-
-    if (wlResult.rows.length > 0) {
-      return wlResult.rows[0].stationName;
-    }
-
-    return null;
-  } catch (error) {
-    console.error("Error mapping station name:", error);
-    return null;
-  }
-}
-  */
-
 router.get("/wienerlinien/:stopName", async (req, res) => {
-  console.log("!!!Received GET request for wienerlinien");
+  //console.log("!!!Received GET request for wienerlinien");
   try {
     const stopName = req.params.stopName;
-    console.log("\n=== Processing Wiener Linien Request ===");
-    console.log("1. Received request for stop:", stopName);
+    //console.log("\n=== Processing Wiener Linien Request ===");
+    //console.log("1. Received request for stop:", stopName);
 
     const debugQuery =
       "SELECT stopid, stoptext FROM haltepunkte WHERE stoptext ILIKE $1";
     const debugResult = await database.query(debugQuery, [`%${stopName}%`]);
-    console.log("2. Debug database search results:", debugResult.rows);
+    //console.log("2. Debug database search results:", debugResult.rows);
 
     const searchPatterns = [
       stopName,
@@ -556,15 +512,15 @@ router.get("/wienerlinien/:stopName", async (req, res) => {
       stopName.replace("Wien ", "").replace(" Bahnhof", ""),
     ].map((pattern) => `%${pattern}%`);
 
-    console.log("3. Trying search patterns:", searchPatterns);
+    //console.log("3. Trying search patterns:", searchPatterns);
 
     const query = `SELECT DISTINCT stopid FROM haltepunkte WHERE stoptext ILIKE ANY($1)`;
     const result = await database.query(query, [searchPatterns]);
 
-    console.log("4. Database query result:", result.rows);
+    //console.log("4. Database query result:", result.rows);
 
     if (!result.rows.length) {
-      console.log("5a. No stops found in database");
+      //console.log("5a. No stops found in database");
       return res.status(404).json({
         error: "Stop not found",
         searchedFor: stopName,
@@ -572,19 +528,19 @@ router.get("/wienerlinien/:stopName", async (req, res) => {
       });
     }
 
-    console.log(
-      "5b. Found stopIds:",
-      result.rows.map((row) => row.stopid)
-    );
+    //console.log(
+    //  "5b. Found stopIds:",
+    //  result.rows.map((row) => row.stopid)
+    //);
 
     // Fetch data for all stopIds
-    console.log("6. Fetching Wiener Linien API data for stops...");
+    //console.log("6. Fetching Wiener Linien API data for stops...");
     const allPromises = result.rows.map((row) =>
       fetchWienerLinienData(row.stopid)
     );
     const allMonitors = await Promise.all(allPromises);
 
-    console.log("7. API Response:", allMonitors);
+    //console.log("7. API Response:", allMonitors);
 
     // Flatten and transform all monitor data
     const seenDepartures = new Set();
@@ -612,10 +568,10 @@ router.get("/wienerlinien/:stopName", async (req, res) => {
     // Sort by departure time
     formattedData.sort((a, b) => new Date(a.departure) - new Date(b.departure));
 
-    console.log("8. Sending formatted data to client:", formattedData);
+    //console.log("8. Sending formatted data to client:", formattedData);
     res.json({ data: formattedData });
   } catch (error) {
-    console.error("Error in Wiener Linien route:", error);
+    //console.error("Error in Wiener Linien route:", error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -175,10 +175,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (stopInfoInput) {
         stopInfoInput.addEventListener('input', debouncedGetSuggestions);
     }
-
+    
     const getArrivalTimesButton = document.getElementById('get-arrival-times-button');
-    if (getArrivalTimesButton) {
-        getArrivalTimesButton.addEventListener('click', getJourneys);
+    const dataTypeSelect = document.getElementById('data-type-select'); // Reference the select element
+    
+    if (getArrivalTimesButton && dataTypeSelect) {
+        getArrivalTimesButton.addEventListener('click', () => {
+            const selectedValue = dataTypeSelect.value; // Get the current value of the dropdown
+            if (selectedValue === 'oebb' || selectedValue === 'both') {
+                getJourneys(); // Trigger getJourneys only if the condition is met
+            } else {
+                console.log('getJourneys not triggered as Wiener Linien is selected');
+            }
+        });
     }
 
     // Set the iframe to the default station's evaId on page load

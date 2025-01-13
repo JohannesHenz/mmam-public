@@ -27,16 +27,26 @@ router.get('/', async (req, res) => {
 // Fetch station ID, latitude, and longitude from the database
 async function fetchStationData(stationName) {
     try {
-        const data = await database.query('SELECT stationID, latitude, longitude FROM stationoebb WHERE stationName = $1', [stationName]);
-        if (data.rows.length === 0) {
-            return { stationId: 1292001, latitude: '0', longitude: '0' };  // Default values if station not found
-        }
-        return data.rows[0];
+      // Use ILIKE to do a case-insensitive match
+      const query = `
+        SELECT stationID, latitude, longitude
+        FROM stationoebb
+        WHERE stationName ILIKE '%' || $1 || '%'
+        LIMIT 1
+      `;
+      const { rows } = await database.query(query, [stationName]);
+  
+      if (rows.length === 0) {
+        // Fallback if no station found
+        return { stationId: 1392068, latitude: '16.376953', longitude: '48.239317' }; 
+      }
+      return rows[0];
     } catch (error) {
-        logger.error(error);
-        throw error;
+      logger.error(error);
+      throw error;
     }
-}
+  }
+  
 
 async function fetchSuggestions(stationName) {
     stationName = stationName || 'Wien';

@@ -7,4 +7,4 @@ router.get('/', async (request, response) => {
     response.send(data.rows);
 });
 
-module.exports = router
+module.exports = router;

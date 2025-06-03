@@ -9,7 +9,7 @@ const cors = require("cors");
 const path = require("path");
 const routes = require("./routes");
 
-const port = 443; // Changed from 3313 to 443
+const port = process.env.PORT || 443;
 
 const server = express();
 server.set("view engine", "ejs");

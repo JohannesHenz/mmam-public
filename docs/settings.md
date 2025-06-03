@@ -8,6 +8,7 @@
 * name
 * endpoint
 * poll interval
+
 * position
 * opacity
 * font-size

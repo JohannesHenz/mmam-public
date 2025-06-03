@@ -10,3 +10,4 @@ if ($argument -eq "docker") {
 
 npm install
 npm run start
+

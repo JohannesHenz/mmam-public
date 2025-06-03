@@ -144,12 +144,53 @@ function initEventListeners() {
     toggleWienerLinienJourneys();
   });
 
+  $("#menu-disruptions").click(toggleDisruptions);
+
+  const wienerlinienWindow = $("#wienerlinienInfo");
+  wienerlinienWindow.draggable({ handle: ".card-header", containment: "window" });
+  $("#toggle-wienerlinien-window").click(function () {
+    wienerlinienWindow.toggle();
+  });
+  $("#close-wienerlinien").click(function () {
+    wienerlinienWindow.hide();
+  });
+
+  $("#get-arrival-times-button").click(async function (e) {
+    e.preventDefault();
+    const stopName = $("#stop-info-oebb-input").val();
+    const dataType = $("#data-type-select").val();
+
+    if (!stopName) {
+      console.error("No stop name provided");
+      $("#wienerlinien-data").html("<p>Please enter a stop name</p>");
+      return;
+    }
+
+    try {
+      await getConnectedLines(stopName);
+
+      if (dataType === "wienerlinien" || dataType === "both") {
+        const response = await $.ajax({
+          url: `/stop-info/wienerlinien/${encodeURIComponent(stopName)}`,
+          method: "GET",
+        });
+        displayWienerLinienInfo(response);
+      }
+    } catch (error) {
+      console.error("Error getting arrival times:", error);
+      $("#wienerlinien-data").html("<p>Error loading departure times</p>");
+    }
+  });
+
+  $("#close-stop-info-oebb").click(function () {
+    $("#stop-info-oebb").hide();
+  });
+
+  $("#wienerlinienInfo, #stop-info-oebb").show();
+  
   settingsEventListeners(); // Keep other event listeners for settings
 }
 
-$(document).ready(function () {
-  $("#menu-disruptions").click(toggleDisruptions);
-});
 
 function updateSettings() {
   $("#latitude").val(map.getCenter().lat);
@@ -189,17 +230,6 @@ function toggleWienerLinienJourneys() {
   $("#wienerlinienInfo").toggle();
 }
 
-$(document).ready(function () {
-  const wienerlinienWindow = $("#wienerlinienInfo");
-  wienerlinienWindow.draggable({
-    handle: ".card-header",
-  });
-
-  const toggleWienerlinienButton = $("#toggle-wienerlinien-window");
-  toggleWienerlinienButton.click(function () {
-    wienerlinienWindow.toggle();
-  });
-});
 
 function zoomLock(state) {
   if (state) {
@@ -309,69 +339,3 @@ function setSettings() {
 
 
 
-$(document).ready(function () {
-  $("#wienerlinienInfo").draggable({
-    handle: ".card-header",
-    containment: "window",
-  });
-});
-
-$(document).ready(function () {
-  $("#close-wienerlinien").click(function () {
-    $("#wienerlinienInfo").hide();
-  });
-});
-
-$(document).ready(function () {
-  // Show windows by default
-  $("#wienerlinienInfo").show();
-  $("#stop-info-oebb").show();
-
-  // Handle Get Arrival Times button click
-  $("#get-arrival-times-button").click(async function (e) {
-    e.preventDefault();
-    const stopName = $("#stop-info-oebb-input").val();
-    const dataType = $("#data-type-select").val();
-
-    //console.log("Get Arrival Times clicked for:", { stopName, dataType });
-
-    if (!stopName) {
-      console.error("No stop name provided");
-      $("#wienerlinien-data").html("<p>Please enter a stop name</p>");
-      return;
-    }
-
-    try {
-      // First get the connected lines to find the Wiener Linien stop ID
-      const connectedLines = await getConnectedLines(stopName);
-      //console.log("Connected lines response:", connectedLines);
-
-      if (dataType === "wienerlinien" || dataType === "both") {
-        // Get Wiener Linien departures
-        //console.log(
-        //  "(Index.js)Getting Wiener Linien departures for:",
-        //  stopName
-        //);
-        const response = await $.ajax({
-          url: `/stop-info/wienerlinien/${encodeURIComponent(stopName)}`,
-          method: "GET",
-        });
-
-        //console.log("Wiener Linien response:", response);
-        displayWienerLinienInfo(response);
-      }
-    } catch (error) {
-      console.error("Error getting arrival times:", error);
-      $("#wienerlinien-data").html("<p>Error loading departure times</p>");
-    }
-  });
-
-  // Window close handlers
-  $("#close-wienerlinien").click(function () {
-    $("#wienerlinienInfo").hide();
-  });
-
-  $("#close-stop-info-oebb").click(function () {
-    $("#stop-info-oebb").hide();
-  });
-});

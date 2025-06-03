@@ -15,6 +15,7 @@ router.get("/", async (request, response) => {
 });
 
 module.exports = router;
+module.exports.convertForecast = convertForecast;
 
 async function fetchWeather() {
   try {

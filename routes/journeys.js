@@ -27,26 +27,25 @@ router.get('/', async (req, res) => {
 // Fetch station ID, latitude, and longitude from the database
 async function fetchStationData(stationName) {
     try {
-      // Use ILIKE to do a case-insensitive match
-      const query = `
-        SELECT stationID, latitude, longitude
-        FROM stationoebb
-        WHERE stationName ILIKE '%' || $1 || '%'
-        LIMIT 1
-      `;
-      const { rows } = await database.query(query, [stationName]);
-  
-      if (rows.length === 0) {
-        // Fallback if no station found
-        return { stationId: 1392068, latitude: '16.376953', longitude: '48.239317' }; 
-      }
-      return rows[0];
+        // Use ILIKE to do a case-insensitive match
+        const query = `
+            SELECT stationID, latitude, longitude
+            FROM stationoebb
+            WHERE stationName ILIKE '%' || $1 || '%'
+            LIMIT 1
+        `;
+        const { rows } = await database.query(query, [stationName]);
+
+        if (rows.length === 0) {
+            // Fallback if no station found
+            return { stationId: 1392068, latitude: '16.376953', longitude: '48.239317' };
+        }
+        return rows[0];
     } catch (error) {
-      logger.error(error);
-      throw error;
+        logger.error(error);
+        throw error;
     }
-  }
-  
+}
 
 async function fetchSuggestions(stationName) {
     stationName = stationName || 'Wien';
@@ -120,7 +119,7 @@ router.get('/stations', async (req, res) => {
         const stations = result.rows;
         res.json(stations);
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ error: 'Failed to fetch stations' });
     }
 });

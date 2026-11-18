@@ -1,28 +1,11 @@
-# `mmam/database`
-* contains the database singleton which ensure the connection to postgresql
-* `database.query` is the main function to interact with the database
+# Project structure
 
-# `mmam/docker`
-* `run.*` to build and run the docker image
-
-# `mmam/docs`
-* ...
-
-# `mmam/public`
-* contains all files (css, js, images, ...) that the frontend can access
-
-# `mmam/utils`
-* contains a logger singleton for the backend
-
-# `mmam/views`
-* contains views (html files) which the backend sends to the frontend
-
-# `mmam/routes`
-* `index.js` contains all routes
-
-# `mmam/server.js`
-* the backend
-
-# `mmam/run.*`
-* installs all npm packages and starts the backend
-* add the parameter `docker` if you wish to rebuild the postgresql database
+* `server.js`: Express app setup and HTTPS server
+* `routes/`: one router per feature; `routes/index.js` mounts them all
+* `database/`: Postgres client singleton that reconnects automatically; `database.query()` is the main entry point
+* `utils/`: backend logger and in-memory location store
+* `views/`: EJS templates rendered by the backend
+* `public/`: static frontend assets (JS, CSS, images)
+* `docker/`: Postgres image and schema (`init.sql`), plus `run.*` to start the database standalone
+* `scripts/`: development helpers (`generate-certs.js`)
+* `run.*`: installs npm packages and starts the backend; pass `docker` to also (re)build the database container

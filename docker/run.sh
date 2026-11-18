@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-docker build -t mmam .
+docker build -f Dockerfile.db -t mmam-db .
 
 image="$(docker ps | awk '/5432/ {print $1}')"
-if [ -z $image ]; then docker kill $image; fi
+if [ -n "$image" ]; then docker kill $image; fi
 
-docker run -p 5432:5432 mmam &
+docker run -p 5432:5432 mmam-db &

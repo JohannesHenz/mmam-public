@@ -65,7 +65,6 @@ function applyFilters() {
 }
 
 async function updateDisruptionsList(disruptions) {
-  console.log("stop-info-oebb-input", $("#stop-info-oebb-input").val());
   const currentStation = $("#stop-info-oebb-input").val();
   connectedLinesCache = (await getConnectedLines(currentStation)) || [];
 
@@ -172,7 +171,6 @@ async function getConnectedLines(stationName) {
   }
 
   try {
-    console.log("Fetching connected lines for:", stationName);
     const encodedStationName = encodeURIComponent(stationName);
     const url = `/stop-info/connected-lines/${encodedStationName}`;
 
@@ -184,7 +182,6 @@ async function getConnectedLines(stationName) {
     }
 
     const lines = await response.json();
-    console.log("Connected lines found:", lines);
     return lines;
   } catch (error) {
     console.error("Error in getConnectedLines:", error);

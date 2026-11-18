@@ -65,9 +65,6 @@ function setLocation(latitude, longitude) {
       latitude: latitude,
       longitude: longitude,
     }),
-    success: function (response) {
-      console.log("Location set successfully:", response);
-    },
     error: function (error) {
       console.error("Error setting location:", error);
     },
@@ -87,10 +84,9 @@ async function getSettings() {
       settings.zoom = response.zoom;
       settings.panLock = false;
       settings.zoomLock = false;
-      console.log("done");
     },
     error: function (error) {
-      console.log(error);
+      console.error(error);
     },
   });
 }
@@ -328,14 +324,8 @@ function setSettings() {
     type: "POST",
     data: JSON.stringify(data),
     contentType: "application/json",
-    success: function (response) {
-      console.log(response);
-    },
     error: function (error) {
-      console.log(error);
+      console.error(error);
     },
   });
 }
-
-
-

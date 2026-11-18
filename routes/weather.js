@@ -1,4 +1,3 @@
-const database = require("../database");
 const router = require("express-promise-router")();
 const axios = require("axios");
 const logger = require("../utils/logger");
@@ -13,9 +12,6 @@ router.get("/", async (request, response) => {
     response.status(500).send("Internal Server Error");
   }
 });
-
-module.exports = router;
-module.exports.convertForecast = convertForecast;
 
 async function fetchWeather() {
   try {
@@ -46,7 +42,6 @@ async function fetchForecast() {
   const startISO = new Date(start - timezoneOffset).toISOString().slice(0, 19);
   const endISO = new Date(end - timezoneOffset).toISOString().slice(0, 19);
 
-  logger.error(startISO);
   const url = `https://dataset.api.hub.geosphere.at/v1/timeseries/forecast/nwp-v1-1h-2500m?parameters=t2m,sy&lat_lon=${latitude}%2C${longitude}&start=${startISO}&end=${endISO}`;
 
   try {
@@ -74,3 +69,6 @@ function convertForecast(data) {
     };
   });
 }
+
+module.exports = router;
+module.exports.convertForecast = convertForecast;

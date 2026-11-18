@@ -10,23 +10,22 @@ $(document).ready(function () {
 let currentWeatherUpdate;
 
 function main() {
-  testCall(AJAX_RETRY_COUNT);
+  fetchWeather(AJAX_RETRY_COUNT);
   setTimeout(main, RETRY_DELAY_SECONDS * 1000);
 }
 
-function testCall(retries) {
+function fetchWeather(retries) {
   $.ajax({
-    url: "https://localhost:443/weather",
+    url: "/weather",
     type: "GET",
     dataType: "json",
     success: function (data, status, xhr) {
-      console.log(data);
       updateWeatherDisplay(data);
     },
     error: function (xhr, status, error) {
       if (retries > 1) {
         setTimeout(function () {
-          testCall(retries - 1);
+          fetchWeather(retries - 1);
         }, AJAX_RETRY_DELAY);
       } else {
         console.log(`failed to GET ${this.url} in ${AJAX_RETRY_COUNT} tries`);

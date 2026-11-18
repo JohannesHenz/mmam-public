@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   database:
     build:
@@ -11,28 +9,25 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - db_data:/var/lib/postgresql/data
-    expose:
-      - "5432"
     ports:
       - "5432:5432"
 
   app:
     build:
+      context: .
       dockerfile: Dockerfile.app
     depends_on:
       - database
     volumes:
+      # Mount the source for hot-reloading; certs/ is picked up from the project root
       - .:/usr/src/app
       - /usr/src/app/node_modules
-      - ./docker/cert.pem:/usr/src/app/certs/cert.pem
-      - ./docker/key.pem:/usr/src/app/certs/key.pem
     ports:
       - "443:443"
     environment:
-      NODE_ENV: development  # Set environment to development for hot-reloading replace with production if not in development
-      DATABASE_URL: postgres://postgres:postgres@database:5432/postgres
-      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
-    command: npm run dev  # Run nodemon for development hot-reloading
+      NODE_ENV: development # use "production" to run without nodemon
+      DATABASE_URL: postgres://postgres:postgres@database:5432/mmam
+    command: npm run dev
 
 volumes:
   db_data:

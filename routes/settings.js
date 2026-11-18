@@ -16,7 +16,6 @@ const settingsBlueprint = {
     zoom: ['number', 1, 20]
 };
 
-// TDOO: move to utils
 function checkObject(object, blueprint) {
     for (const key in blueprint) {
         if (object[key] === undefined) {
@@ -47,7 +46,7 @@ function checkObject(object, blueprint) {
 
 router.post('/', async (request, response) => {
     const body = request.body;
-    logger.info(body);
+    logger.debug('POST /settings', body);
 
     const result = checkObject(body, settingsBlueprint);
     if (result !== null) {
@@ -55,16 +54,14 @@ router.post('/', async (request, response) => {
         return;
     }
 
-    await database.query(`
-        UPDATE settings SET
-            latitude = ${body.latitude},
-            longitude = ${body.longitude},
-            zoom = ${body.zoom}
-        WHERE id = 1
-    `);
+    await database.query(
+        'UPDATE settings SET latitude = $1, longitude = $2, zoom = $3 WHERE id = 1',
+        [body.latitude, body.longitude, body.zoom]
+    );
     response.setHeader('Content-Type', 'application/json');
     response.status(200).send();
 });
 
-module.exports = router
-module.exports.checkObject = checkObject
+module.exports = router;
+module.exports.checkObject = checkObject;
+

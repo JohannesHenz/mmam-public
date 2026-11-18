@@ -1,5 +1,5 @@
 # Build Docker image
-docker build -t mmam .
+docker build -f Dockerfile.db -t mmam-db .
 
 # Get container ID for the running container on port 5432
 $image = docker ps | ForEach-Object { 
@@ -14,4 +14,4 @@ if ($image) {
 }
 
 # Run the Docker container on port 5432
-Start-Process -FilePath "docker" -ArgumentList @("run", "-d", "-p", "5432:5432", "mmam") -Wait -NoNewWindow
+Start-Process -FilePath "docker" -ArgumentList @("run", "-d", "-p", "5432:5432", "mmam-db") -Wait -NoNewWindow

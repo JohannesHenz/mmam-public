@@ -1,9 +1,9 @@
 - [x] translate `*.sh` to `*.ps1` for Windows
-- [x] create a working WinerLinien API call
-- [ ] integrate a working WinerLinien API call
-- [ ] create and integrate a working ÖBB API call
-- [x] create and integrate a working Weather API call
-- [ ] it's probably a good idea to authenticate the user upon entering the setttings
-- [ ] use dotenv
-- [ ] upload weather data to database
-- [ ] display weather data in frontend
+- [x] create a working Wiener Linien API call
+- [x] integrate a working Wiener Linien API call
+- [x] create and integrate a working ÖBB API call
+- [x] create and integrate a working weather API call
+- [x] display weather data in frontend
+- [x] use dotenv
+- [ ] authenticate the user before allowing settings changes
+- [ ] persist weather data in the database

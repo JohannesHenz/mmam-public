@@ -49,12 +49,16 @@ class Database {
   }
 }
 
-const database = new Database({
-  host: "database",
-  port: 5432,
-  database: "mmam",
-  user: "postgres",
-  password: "postgres",
-});
+const database = new Database(
+  process.env.DATABASE_URL
+    ? { connectionString: process.env.DATABASE_URL }
+    : {
+        host: "database",
+        port: 5432,
+        database: "mmam",
+        user: "postgres",
+        password: "postgres",
+      }
+);
 
 module.exports = database;

@@ -1,38 +1,21 @@
 function getStopInfo(stopName, dataType = "both") {
-  //console.log("3. getStopInfo called with:", { stopName, dataType });
-
   $.ajax({
     url: "/stop-info",
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify({ stopName, dataType }),
     success: function (response) {
-      //console.log("4a. POST request successful");
-      //console.log("4b. POST response data:", response);
       displayWienerLinienInfo(response);
     },
-    error: function (error) {
-      //console.error("4c. POST request failed:", {
-      //  status: error.status,
-      //  statusText: error.statusText,
-      //  responseText: error.responseText,
-      //});
-
-      //console.log("5. Trying GET fallback...");
+    error: function () {
+      // Fall back to the GET endpoint, which searches with looser name patterns
       $.ajax({
         url: `/stop-info/wienerlinien/${encodeURIComponent(stopName)}`,
         method: "GET",
         success: function (response) {
-          //console.log("6a. GET request successful");
-          //console.log("6b. GET response data:", response);
           displayWienerLinienInfo(response);
         },
         error: function (error) {
-          //console.error("6c. GET request failed:", {
-          //  status: error.status,
-          //  statusText: error.statusText,
-          //  responseText: error.responseText,
-          //});
           $("#wienerlinien-data").html("<p>Error loading departure times</p>");
         },
       });
@@ -100,12 +83,10 @@ function formatStopInfo(stopData) {
 }
 
 function displayWienerLinienInfo(info) {
-  //console.log("Displaying Wiener Linien info:", info);
   const wienerlinienData = $("#wienerlinien-data");
   wienerlinienData.empty();
 
   if (!info || !info.data || info.data.length === 0) {
-    //console.log("No departure data available");
     wienerlinienData.append("<p>No departures available</p>");
     return;
   }
@@ -114,7 +95,6 @@ function displayWienerLinienInfo(info) {
   const tableBody = $("<tbody>");
 
   info.data.forEach((departure) => {
-    //console.log("Processing departure:", departure);
     const row = $("<tr>");
     row.append($("<td>").text(departure.line));
     row.append($("<td>").text(departure.direction));
@@ -134,7 +114,6 @@ function displayWienerLinienInfo(info) {
   );
   table.append(tableBody);
   wienerlinienData.append(table);
-  //console.log("Table displayed successfully");
 }
 
 function isTrainLine(lineName) {

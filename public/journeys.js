@@ -38,7 +38,6 @@ async function getSuggestions() {
         },
         success: function (response) {
             suggestions = response;
-            console.log(suggestions);
             const suggestionsList = $('#suggestions');
             suggestionsList.empty();
             suggestions.suggestions.forEach(suggestion => {
@@ -48,7 +47,7 @@ async function getSuggestions() {
             });
         },
         error: function (error) {
-            console.log(error);
+            console.error(error);
         }
     });
 }
@@ -65,7 +64,6 @@ async function getJourneys() {
             stationName: station
         },
         success: async function (response) {
-            console.log(response);
             const stationId = response.stationid;
             const latitude = parseFloat(response.latitude);  // Latitude from the database
             const longitude = parseFloat(response.longitude);  // Longitude from the database
@@ -83,13 +81,11 @@ async function getJourneys() {
             // Save updated settings
             setSettings();
 
-            console.log(`Station ID: ${stationId}, Latitude: ${latitude}, Longitude: ${longitude}`);
-
             // Fetch and display nearby stations
             await getNearbyStations(); 
         },
         error: function (error) {
-            console.log(error);
+            console.error(error);
         }
     });
 }
@@ -99,12 +95,11 @@ async function getNearbyStations() {
         url: '/journeys/stations',
         type: 'GET',
         success: function (response) {
-            console.log(response);
             const nearbyStations = calculateNearbyStations(response);
             displayNearbyStations(nearbyStations);
         },
         error: function (error) {
-            console.log(error);
+            console.error(error);
         }
     });
 }
@@ -148,7 +143,6 @@ function displayNearbyStations(nearbyStations) {
     
     // Drop pins for nearby stations
     nearbyStations.forEach(station => {
-        console.log(station);
         dropPin(parseFloat(station.latitude), parseFloat(station.longitude), station.stationname, station.stationid);
     });
 }
